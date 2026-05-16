@@ -1,0 +1,5 @@
+collection.db
+collection_raw.csv
+sheets_token.json
+*.pyc
+__pycache__/
