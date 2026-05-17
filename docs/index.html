@@ -1,175 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transformers Collection</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #0d0d0d;
-      color: #eee;
-      min-height: 100vh;
-    }
-    header {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      padding: 24px 32px;
-      border-bottom: 2px solid #e94560;
-    }
-    header h1 {
-      font-size: 2rem;
-      color: #e94560;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    header p { color: #aaa; margin-top: 4px; font-size: 0.9rem; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transformers Collection</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&display=swap');
 
-    .stats {
-      display: flex;
-      gap: 16px;
-      padding: 20px 32px;
-      background: #111;
-      flex-wrap: wrap;
-      border-bottom: 1px solid #222;
-    }
-    .stat-card {
-      background: #1a1a1a;
-      border-radius: 8px;
-      padding: 12px 20px;
-      text-align: center;
-      min-width: 100px;
-      border: 1px solid #2a2a2a;
-    }
-    .stat-card .number { font-size: 1.8rem; font-weight: bold; color: #e94560; }
-    .stat-card .label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  :root {
+    --red:    #e63946;
+    --gold:   #ffd60a;
+    --steel:  #adb5bd;
+    --dark:   #0a0a0f;
+    --card:   #12121a;
+    --border: #1e1e2e;
+    --glow:   rgba(230,57,70,0.35);
+  }
 
-    .controls {
-      padding: 20px 32px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-      background: #111;
-      border-bottom: 1px solid #222;
-    }
-    #search {
-      padding: 10px 16px;
-      border-radius: 6px;
-      border: 1px solid #333;
-      background: #1a1a1a;
-      color: #eee;
-      font-size: 1rem;
-      width: 280px;
-      outline: none;
-    }
-    #search:focus { border-color: #e94560; }
-    .filter-btn {
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: 1px solid #333;
-      background: #1a1a1a;
-      color: #aaa;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-    .filter-btn:hover { border-color: #e94560; color: #eee; }
-    .filter-btn.active { background: #e94560; border-color: #e94560; color: #fff; }
-    #result-count { color: #666; font-size: 0.85rem; margin-left: auto; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 16px;
-      padding: 24px 32px;
-    }
-    .card {
-      background: #1a1a1a;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid #2a2a2a;
-      transition: transform 0.2s, border-color 0.2s;
-      cursor: default;
-    }
-    .card:hover { transform: translateY(-4px); border-color: #e94560; }
-    .card-img {
-      width: 100%;
-      height: 200px;
-      object-fit: contain;
-      background: #111;
-      padding: 8px;
-    }
-    .card-body { padding: 12px; }
-    .card-name {
-      font-size: 1rem;
-      font-weight: bold;
-      color: #fff;
-      margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .card-line { font-size: 0.8rem; color: #888; margin-bottom: 8px; }
-    .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-    .badge {
-      font-size: 0.7rem;
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .badge-status { color: #fff; }
-    .badge-wrecker { background: #2c3e50; color: #e74c3c; border: 1px solid #e74c3c; }
-    .badge-combiner { background: #2c3e50; color: #f39c12; border: 1px solid #f39c12; }
-    .card-rank { font-size: 0.85rem; color: #aaa; }
-    .card-rank span { color: #e94560; font-weight: bold; }
-    .card-retailer { font-size: 0.75rem; color: #666; margin-top: 4px; }
-    .card-notes { font-size: 0.75rem; color: #555; margin-top: 4px; font-style: italic; }
-    .no-results { text-align: center; color: #555; padding: 80px 32px; font-size: 1.1rem; }
-  </style>
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--dark);
+    color: #cdd6f4;
+    min-height: 100vh;
+    background-image:
+      linear-gradient(rgba(230,57,70,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(230,57,70,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    overflow: hidden;
+    padding: 36px 40px 28px;
+    background: linear-gradient(135deg, #0d0d14 0%, #12121f 60%, #1a0a0e 100%);
+    border-bottom: 2px solid var(--red);
+    box-shadow: 0 4px 40px var(--glow);
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 18px,
+      rgba(230,57,70,0.04) 18px,
+      rgba(230,57,70,0.04) 19px
+    );
+    pointer-events: none;
+  }
+  .header-inner { position: relative; display: flex; align-items: center; gap: 20px; }
+  .tf-logo {
+    width: 64px; height: 64px; flex-shrink: 0;
+    filter: drop-shadow(0 0 12px var(--red));
+  }
+  header h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.4rem, 4vw, 2.4rem);
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    line-height: 1.1;
+    text-shadow: 0 0 20px var(--red), 0 0 40px rgba(230,57,70,0.4);
+  }
+  header h1 span { color: var(--red); }
+  .header-sub { color: var(--steel); font-size: 0.85rem; letter-spacing: 2px; margin-top: 4px; }
+
+  /* ── STATS BAR ── */
+  .stats {
+    display: flex; gap: 2px; flex-wrap: wrap;
+    background: #0d0d14;
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    flex: 1; min-width: 90px;
+    padding: 16px 12px;
+    text-align: center;
+    position: relative;
+    border-right: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .stat:hover { background: #151520; }
+  .stat-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.7rem; font-weight: 700;
+    color: var(--red);
+    text-shadow: 0 0 12px var(--glow);
+  }
+  .stat-lbl {
+    font-size: 0.7rem; color: #555;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-top: 2px;
+  }
+
+  /* ── CONTROLS ── */
+  .controls {
+    padding: 16px 24px;
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    background: #0d0d14;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
+    backdrop-filter: blur(8px);
+  }
+  .search-wrap {
+    position: relative; flex: 1; min-width: 220px; max-width: 380px;
+  }
+  .search-wrap svg {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; stroke: #444; pointer-events: none;
+  }
+  #search {
+    width: 100%; padding: 9px 14px 9px 36px;
+    background: #12121a; border: 1px solid #2a2a3e;
+    border-radius: 6px; color: #cdd6f4;
+    font-family: 'Rajdhani', sans-serif; font-size: 1rem;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #search:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(230,57,70,0.15); }
+  #search::placeholder { color: #3a3a5a; }
+
+  .filter-btn {
+    padding: 8px 16px; border-radius: 6px;
+    border: 1px solid #2a2a3e; background: #12121a;
+    color: #666; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; font-weight: 600;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--red); color: #cdd6f4; }
+  .filter-btn.active {
+    background: var(--red); border-color: var(--red); color: #fff;
+    box-shadow: 0 0 12px var(--glow);
+  }
+  #result-count {
+    margin-left: auto; color: #444;
+    font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* ── GRID ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px; padding: 20px 24px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+    transition: transform 0.25s cubic-bezier(.17,.67,.47,1.27),
+                border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .card::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(230,57,70,0.06) 0%, transparent 60%);
+    pointer-events: none; opacity: 0; transition: opacity 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: var(--red);
+    box-shadow: 0 8px 32px var(--glow), 0 0 0 1px rgba(230,57,70,0.2);
+  }
+  .card:hover::before { opacity: 1; }
+
+  .card-img-wrap {
+    position: relative; width: 100%; height: 200px;
+    background: #0a0a12; overflow: hidden;
+  }
+  .card-img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    transition: transform 0.35s ease;
+    padding: 6px;
+  }
+  .card:hover .card-img { transform: scale(1.08); }
+  .card-img-wrap::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
+    background: linear-gradient(transparent, var(--card));
+    pointer-events: none;
+  }
+
+  .rank-badge {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(10,10,18,0.85);
+    border: 1px solid var(--red);
+    color: var(--gold); font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem; font-weight: 700;
+    padding: 3px 7px; border-radius: 4px;
+    backdrop-filter: blur(4px);
+  }
+
+  .card-body { padding: 10px 12px 12px; }
+  .card-name {
+    font-size: 1rem; font-weight: 700; color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    letter-spacing: 0.3px; margin-bottom: 2px;
+  }
+  .card-line { font-size: 0.75rem; color: #4a4a6a; margin-bottom: 8px; letter-spacing: 0.5px; }
+
+  .badges { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 7px; }
+  .badge {
+    font-size: 0.65rem; padding: 2px 8px; border-radius: 20px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+    white-space: nowrap;
+  }
+  .badge-status { color: #fff; }
+  .badge-wrecker {
+    background: transparent; color: #e63946;
+    border: 1px solid #e63946;
+  }
+  .badge-combiner {
+    background: transparent; color: var(--gold);
+    border: 1px solid var(--gold);
+  }
+
+  .card-meta { font-size: 0.75rem; color: #3a3a5a; margin-top: 4px; }
+  .card-meta span { color: #555; }
+  .card-notes { font-size: 0.72rem; color: #3a3a5a; margin-top: 4px; font-style: italic; }
+
+  /* ── EMPTY STATE ── */
+  .no-results {
+    text-align: center; color: #2a2a4a; padding: 100px 32px;
+    font-family: 'Orbitron', sans-serif; font-size: 1rem; letter-spacing: 2px;
+  }
+  .no-results::before { content: '⚙ '; font-size: 2rem; display: block; margin-bottom: 16px; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 3px; }
+</style>
 </head>
 <body>
 
 <header>
-  <h1>&#9889; Transformers Collection</h1>
-  <p>Updated 2026-05-16</p>
+  <div class="header-inner">
+    <!-- Autobot symbol SVG -->
+    <svg class="tf-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="50,5 95,28 95,72 50,95 5,72 5,28" fill="#1a0a0e" stroke="#e63946" stroke-width="3"/>
+      <polygon points="50,18 80,34 80,66 50,82 20,66 20,34" fill="none" stroke="#e63946" stroke-width="1.5" opacity="0.4"/>
+      <polygon points="50,25 62,38 62,58 50,68 38,58 38,38" fill="#e63946" opacity="0.9"/>
+      <circle cx="50" cy="46" r="6" fill="#ffd60a"/>
+      <line x1="50" y1="5" x2="50" y2="25" stroke="#e63946" stroke-width="2"/>
+      <line x1="5" y1="28" x2="20" y2="34" stroke="#e63946" stroke-width="2"/>
+      <line x1="95" y1="28" x2="80" y2="34" stroke="#e63946" stroke-width="2"/>
+      <line x1="5" y1="72" x2="20" y2="66" stroke="#e63946" stroke-width="2"/>
+      <line x1="95" y1="72" x2="80" y2="66" stroke="#e63946" stroke-width="2"/>
+      <line x1="50" y1="95" x2="50" y2="68" stroke="#e63946" stroke-width="2"/>
+    </svg>
+    <div>
+      <h1><span>Transformers</span> Collection</h1>
+      <div class="header-sub">Updated 2026-05-16 &nbsp;·&nbsp; 0/236 figures with images</div>
+    </div>
+  </div>
 </header>
 
 <div class="stats">
-  <div class="stat-card"><div class="number">236</div><div class="label">Total</div></div>
-  <div class="stat-card"><div class="number">201</div><div class="label">Owned</div></div>
-  <div class="stat-card"><div class="number">28</div><div class="label">Wishlist</div></div>
-  <div class="stat-card"><div class="number">6</div><div class="label">Pre-ordered</div></div>
-  <div class="stat-card"><div class="number">1</div><div class="label">Ordered</div></div>
-  <div class="stat-card"><div class="number">24</div><div class="label">Wreckers</div></div>
-  <div class="stat-card"><div class="number">6.0</div><div class="label">Avg Rank</div></div>
+  <div class="stat"><div class="stat-num">236</div><div class="stat-lbl">Total</div></div>
+  <div class="stat"><div class="stat-num">201</div><div class="stat-lbl">Owned</div></div>
+  <div class="stat"><div class="stat-num">28</div><div class="stat-lbl">Wishlist</div></div>
+  <div class="stat"><div class="stat-num">6</div><div class="stat-lbl">Pre-ordered</div></div>
+  <div class="stat"><div class="stat-num">1</div><div class="stat-lbl">Ordered</div></div>
+  <div class="stat"><div class="stat-num">24</div><div class="stat-lbl">Wreckers</div></div>
+  <div class="stat"><div class="stat-num">6.0</div><div class="stat-lbl">Avg Rank</div></div>
 </div>
 
 <div class="controls">
-  <input type="text" id="search" placeholder="&#128269; Search name, line, combiner..." oninput="render()">
-  <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
-  <button class="filter-btn" onclick="setFilter('owned', this)">Owned</button>
-  <button class="filter-btn" onclick="setFilter('want', this)">Wishlist</button>
-  <button class="filter-btn" onclick="setFilter('preordered', this)">Pre-ordered</button>
-  <button class="filter-btn" onclick="setFilter('ordered', this)">Ordered</button>
-  <button class="filter-btn" onclick="setFilter('wrecker', this)">Wreckers</button>
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="search" placeholder="Search name, line, combiner..." oninput="render()">
+  </div>
+  <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+  <button class="filter-btn" onclick="setFilter('owned',this)">Owned</button>
+  <button class="filter-btn" onclick="setFilter('want',this)">Wishlist</button>
+  <button class="filter-btn" onclick="setFilter('preordered',this)">Pre-ordered</button>
+  <button class="filter-btn" onclick="setFilter('ordered',this)">Ordered</button>
+  <button class="filter-btn" onclick="setFilter('wrecker',this)">Wreckers</button>
   <span id="result-count"></span>
 </div>
 
 <div class="grid" id="grid"></div>
-<div class="no-results" id="no-results" style="display:none">No figures match your search.</div>
+<div class="no-results" id="no-results" style="display:none">NO FIGURES FOUND</div>
 
 <script>
-const STATUS_COLOR = {"owned": "#2ecc71", "want": "#3498db", "preordered": "#e67e22", "ordered": "#9b59b6"};
+const STATUS_COLOR = {"owned": "#00d4aa", "want": "#4d9fff", "preordered": "#ff9f43", "ordered": "#c56cfc"};
 const STATUS_LABEL = {"owned": "Owned", "want": "Wishlist", "preordered": "Pre-ordered", "ordered": "Ordered"};
-let allFigures = [];
+let figures = [];
 let activeFilter = 'all';
 
 async function init() {
   const res = await fetch('data.json');
-  allFigures = await res.json();
+  figures = await res.json();
   render();
 }
 
@@ -182,7 +314,7 @@ function setFilter(f, btn) {
 
 function render() {
   const q = document.getElementById('search').value.toLowerCase().trim();
-  let figs = allFigures;
+  let figs = figures;
 
   if (activeFilter === 'wrecker') {
     figs = figs.filter(f => f.is_wrecker);
@@ -202,9 +334,10 @@ function render() {
 
   const grid = document.getElementById('grid');
   const noResults = document.getElementById('no-results');
-  document.getElementById('result-count').textContent = `${figs.length} figure${figs.length !== 1 ? 's' : ''}`;
+  document.getElementById('result-count').textContent =
+    figs.length + ' figure' + (figs.length !== 1 ? 's' : '');
 
-  if (figs.length === 0) {
+  if (!figs.length) {
     grid.innerHTML = '';
     noResults.style.display = '';
     return;
@@ -214,29 +347,33 @@ function render() {
   grid.innerHTML = figs.map(f => {
     const color = STATUS_COLOR[f.status] || '#888';
     const label = STATUS_LABEL[f.status] || f.status;
-    const rank = f.rank != null ? `<div class="card-rank">Rank: <span>${f.rank}/10</span></div>` : '';
-    const wrecker = f.is_wrecker ? `<span class="badge badge-wrecker">Wrecker</span>` : '';
-    const combiner = f.combiner ? `<span class="badge badge-combiner">${f.combiner}</span>` : '';
-    const retailer = f.retailer ? `<div class="card-retailer">&#128722; ${f.retailer}</div>` : '';
-    const notes = f.notes ? `<div class="card-notes">${f.notes}</div>` : '';
-    const wikiUrl = `https://tfwiki.net/wiki/${encodeURIComponent(f.name.replace(/ /g, '_'))}`;
+    const wikiUrl = 'https://tfwiki.net/wiki/' + encodeURIComponent(f.name.replace(/ /g,'_'));
+    const rankBadge = f.rank != null
+      ? `<div class="rank-badge">${f.rank}/10</div>` : '';
+    const wrecker  = f.is_wrecker ? `<span class="badge badge-wrecker">Wrecker</span>` : '';
+    const combiner = f.combiner   ? `<span class="badge badge-combiner">${f.combiner}</span>` : '';
+    const retailer = f.retailer   ? `<div class="card-meta">&#128722; <span>${f.retailer}</span></div>` : '';
+    const notes    = f.notes      ? `<div class="card-notes">${f.notes}</div>` : '';
 
     return `
-      <div class="card">
-        <a href="${wikiUrl}" target="_blank" rel="noopener">
-          <img class="card-img" src="${f.image_url}" alt="${f.name}"
-               onerror="this.src='https://via.placeholder.com/220x200/111/444?text=No+Image'">
-        </a>
-        <div class="card-body">
-          <div class="card-name" title="${f.name}">${f.name}</div>
-          <div class="card-line">${f.line || '—'}</div>
-          <div class="badges">
-            <span class="badge badge-status" style="background:${color}">${label}</span>
-            ${wrecker}${combiner}
-          </div>
-          ${rank}${retailer}${notes}
-        </div>
-      </div>`;
+<div class="card">
+  <a href="${wikiUrl}" target="_blank" rel="noopener">
+    <div class="card-img-wrap">
+      ${rankBadge}
+      <img class="card-img" src="${f.image}" alt="${f.name}"
+           onerror="this.src='images/placeholder.png'">
+    </div>
+  </a>
+  <div class="card-body">
+    <div class="card-name" title="${f.name}">${f.name}</div>
+    <div class="card-line">${f.line || '—'}</div>
+    <div class="badges">
+      <span class="badge badge-status" style="background:${color}">${label}</span>
+      ${wrecker}${combiner}
+    </div>
+    ${retailer}${notes}
+  </div>
+</div>`;
   }).join('');
 }
 
