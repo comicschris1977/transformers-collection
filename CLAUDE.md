@@ -81,9 +81,32 @@ When the user asks about a character's lore, alt modes, release dates, pricing, 
 | Core | Core-class figures |
 | KO | Knock-Off (third-party/unofficial) |
 
-## Refreshing Data from Google Sheet
+## Syncing Data from Google Sheet
 
-If the user wants to re-sync from the Google Sheet:
-1. Run `$PYTHON tools/fetch_sheet.py` (may open browser for auth)
-2. Clear the DB: `$PYTHON -c "import sqlite3; c=sqlite3.connect('collection.db'); c.execute('DELETE FROM figures'); c.commit()"`
-3. Reimport: `$PYTHON tools/import_csv.py`
+When the user says **"sync the sheet"**, **"sync"**, or clicks the **Sync from Sheet** button on the site, run:
+
+```
+$PYTHON tools/sync_sheet.py
+```
+
+This script:
+1. Pulls the latest CSV from Google Sheets (may open browser for OAuth the first time)
+2. Diffs sheet rows against the DB (matched by name+line, case-insensitive)
+3. Reports what's new, changed, and missing
+4. Adds new figures, updates changed fields, fetches images for new entries, rebuilds the site
+
+After sync, **commit and push** so GitHub Pages picks up the changes:
+```
+git add -A && git commit -m "Sync from Google Sheet" && git push
+```
+
+Flags:
+- `--dry-run` — show diffs without writing anything
+- `--no-images` — skip the image-fetch step (rebuild only)
+
+### Full re-import (rare — destructive)
+
+If the user wants to wipe and re-import from scratch:
+1. `$PYTHON tools/fetch_sheet.py`
+2. `$PYTHON -c "import sqlite3; c=sqlite3.connect('collection.db'); c.execute('DELETE FROM figures'); c.commit()"`
+3. `$PYTHON tools/import_csv.py`

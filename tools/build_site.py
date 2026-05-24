@@ -355,6 +355,77 @@ def build():
   ::-webkit-scrollbar {{ width: 6px; }}
   ::-webkit-scrollbar-track {{ background: var(--dark); }}
   ::-webkit-scrollbar-thumb {{ background: var(--red); border-radius: 3px; }}
+
+  /* ── SYNC BUTTON & MODAL ── */
+  .sync-btn {{
+    margin-left: auto; align-self: center; flex-shrink: 0;
+    padding: 10px 18px; border-radius: 6px;
+    border: 1px solid var(--red); background: rgba(230,57,70,0.1);
+    color: #fff; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    transition: all 0.18s; display: inline-flex; align-items: center; gap: 8px;
+  }}
+  .sync-btn:hover {{
+    background: var(--red);
+    box-shadow: 0 0 18px var(--glow);
+    transform: translateY(-1px);
+  }}
+  .sync-btn .sync-icon {{ font-size: 1rem; }}
+
+  .modal-backdrop {{
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center;
+    z-index: 1000;
+  }}
+  .modal-backdrop.open {{ display: flex; }}
+  .modal {{
+    background: var(--card);
+    border: 1px solid var(--red);
+    border-radius: 12px;
+    padding: 28px 32px;
+    max-width: 520px; width: 92%;
+    box-shadow: 0 12px 60px rgba(230,57,70,0.4);
+  }}
+  .modal h2 {{
+    font-family: 'Orbitron', sans-serif;
+    color: #fff; font-size: 1.15rem; letter-spacing: 2px;
+    margin-bottom: 14px; text-transform: uppercase;
+  }}
+  .modal h2 span {{ color: var(--red); }}
+  .modal p {{
+    color: #9090a8; font-size: 0.95rem; line-height: 1.45;
+    margin-bottom: 16px;
+  }}
+  .modal-code {{
+    background: #08080d; border: 1px solid #2a2a3e;
+    border-radius: 6px; padding: 14px 16px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    color: var(--gold); font-size: 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 18px;
+  }}
+  .modal-code code {{ flex: 1; user-select: all; }}
+  .modal-btn {{
+    padding: 7px 14px; border-radius: 5px;
+    border: 1px solid var(--red); background: transparent;
+    color: var(--red); cursor: pointer;
+    font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    transition: all 0.15s; white-space: nowrap;
+  }}
+  .modal-btn:hover {{ background: var(--red); color: #fff; }}
+  .modal-actions {{ display: flex; justify-content: flex-end; gap: 10px; }}
+  .modal-close {{
+    border-color: #2a2a3e; color: #666;
+  }}
+  .modal-close:hover {{ background: #2a2a3e; color: #cdd6f4; }}
+  .modal-hint {{
+    color: #4a4a68; font-size: 0.78rem; font-style: italic;
+    margin-top: 4px;
+  }}
 </style>
 </head>
 <body>
@@ -378,8 +449,26 @@ def build():
       <h1><span>Transformers</span> Collection</h1>
       <div class="header-sub">Updated {today} &nbsp;·&nbsp; {with_images}/{stats['total']} figures with images</div>
     </div>
+    <button class="sync-btn" onclick="openSyncModal()" title="Pull latest changes from Google Sheet">
+      <span class="sync-icon">&#x21bb;</span> Sync from Sheet
+    </button>
   </div>
 </header>
+
+<div class="modal-backdrop" id="sync-modal" onclick="if(event.target===this)closeSyncModal()">
+  <div class="modal">
+    <h2>&#x21bb; <span>Sync</span> from Google Sheet</h2>
+    <p>This site is static (GitHub Pages), so the sync runs on your machine via Claude. Open Claude Code and send this message:</p>
+    <div class="modal-code">
+      <code id="sync-trigger">sync the sheet</code>
+      <button class="modal-btn" onclick="copySyncTrigger(this)">Copy</button>
+    </div>
+    <p>Claude will pull the latest sheet, add new figures, update changed ones (status / rank / notes / etc.), fetch images for new entries, rebuild the site, and push.</p>
+    <div class="modal-actions">
+      <button class="modal-btn modal-close" onclick="closeSyncModal()">Close</button>
+    </div>
+  </div>
+</div>
 
 <div class="stats">
   <div class="stat"><div class="stat-num">{stats['total']}</div><div class="stat-lbl">Total</div></div>
@@ -451,6 +540,24 @@ function copyFlagged() {{
     setTimeout(() => btn.textContent = 'Copy List', 1500);
   }});
 }}
+
+function openSyncModal() {{
+  document.getElementById('sync-modal').classList.add('open');
+}}
+function closeSyncModal() {{
+  document.getElementById('sync-modal').classList.remove('open');
+}}
+function copySyncTrigger(btn) {{
+  const text = document.getElementById('sync-trigger').textContent;
+  navigator.clipboard.writeText(text).then(() => {{
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  }});
+}}
+document.addEventListener('keydown', e => {{
+  if (e.key === 'Escape') closeSyncModal();
+}});
 
 async function init() {{
   const res = await fetch('data.json');
