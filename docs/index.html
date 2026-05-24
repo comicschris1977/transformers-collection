@@ -136,10 +136,46 @@
     background: var(--red); border-color: var(--red); color: #fff;
     box-shadow: 0 0 12px var(--glow);
   }
+  .filter-btn.flag-filter { border-color: #ff9f43; color: #ff9f43; }
+  .filter-btn.flag-filter.active { background: #ff9f43; border-color: #ff9f43; color: #0a0a0f; box-shadow: 0 0 12px rgba(255,159,67,0.4); }
   #result-count {
     margin-left: auto; color: #444;
     font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;
   }
+
+  /* ── FLAG BUTTON ── */
+  .flag-btn {
+    position: absolute; top: 8px; left: 8px;
+    width: 28px; height: 28px;
+    background: rgba(0,0,0,0.6); border: 1px solid #2a2a3e;
+    border-radius: 4px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; line-height: 1;
+    transition: all 0.15s; backdrop-filter: blur(4px);
+    z-index: 2; opacity: 0;
+  }
+  .card:hover .flag-btn { opacity: 1; }
+  .flag-btn:hover { border-color: #ff9f43; background: rgba(255,159,67,0.2); }
+  .flag-btn.flagged {
+    opacity: 1; border-color: #ff9f43;
+    background: rgba(255,159,67,0.25);
+  }
+  .card.is-flagged {
+    border-color: rgba(255,159,67,0.5);
+    box-shadow: 0 0 0 1px rgba(255,159,67,0.2);
+  }
+
+  /* ── COPY FLAGGED ── */
+  #copy-flagged {
+    padding: 8px 14px; border-radius: 6px;
+    border: 1px solid #2a2a3e; background: #12121a;
+    color: #444; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    transition: all 0.2s; display: none;
+  }
+  #copy-flagged.visible { display: block; color: #ff9f43; border-color: #ff9f43; }
+  #copy-flagged:hover { background: rgba(255,159,67,0.1); }
 
   /* ── GRID ── */
   .grid {
@@ -288,6 +324,8 @@
   <button class="filter-btn" onclick="setFilter('preordered',this)">Pre-ordered</button>
   <button class="filter-btn" onclick="setFilter('ordered',this)">Ordered</button>
   <button class="filter-btn" onclick="setFilter('wrecker',this)">Wreckers</button>
+  <button class="filter-btn flag-filter" onclick="setFilter('flagged',this)">&#128681; Flagged <span id="flag-count"></span></button>
+  <button id="copy-flagged" onclick="copyFlagged()">Copy List</button>
   <span id="result-count"></span>
 </div>
 
@@ -299,6 +337,41 @@ const STATUS_COLOR = {"owned": "#00d4aa", "want": "#4d9fff", "preordered": "#ff9
 const STATUS_LABEL = {"owned": "Owned", "want": "Wishlist", "preordered": "Pre-ordered", "ordered": "Ordered"};
 let figures = [];
 let activeFilter = 'all';
+const STORAGE_KEY = 'tfcollection_flagged';
+
+function getFlagged() {
+  try { return new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')); }
+  catch { return new Set(); }
+}
+function saveFlagged(set) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
+}
+function toggleFlag(id) {
+  const flagged = getFlagged();
+  flagged.has(id) ? flagged.delete(id) : flagged.add(id);
+  saveFlagged(flagged);
+  render();
+}
+
+function updateFlagUI() {
+  const count = getFlagged().size;
+  document.getElementById('flag-count').textContent = count ? `(${count})` : '';
+  const copyBtn = document.getElementById('copy-flagged');
+  copyBtn.classList.toggle('visible', count > 0);
+}
+
+function copyFlagged() {
+  const flagged = getFlagged();
+  const names = figures
+    .filter(f => flagged.has(f.id))
+    .map(f => `${f.name} (${f.line})`)
+    .join('\n');
+  navigator.clipboard.writeText(names).then(() => {
+    const btn = document.getElementById('copy-flagged');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy List', 1500);
+  });
+}
 
 async function init() {
   const res = await fetch('data.json');
@@ -315,10 +388,13 @@ function setFilter(f, btn) {
 
 function render() {
   const q = document.getElementById('search').value.toLowerCase().trim();
+  const flagged = getFlagged();
   let figs = figures;
 
   if (activeFilter === 'wrecker') {
     figs = figs.filter(f => f.is_wrecker);
+  } else if (activeFilter === 'flagged') {
+    figs = figs.filter(f => flagged.has(f.id));
   } else if (activeFilter !== 'all') {
     figs = figs.filter(f => f.status === activeFilter);
   }
@@ -338,6 +414,8 @@ function render() {
   document.getElementById('result-count').textContent =
     figs.length + ' figure' + (figs.length !== 1 ? 's' : '');
 
+  updateFlagUI();
+
   if (!figs.length) {
     grid.innerHTML = '';
     noResults.style.display = '';
@@ -346,14 +424,14 @@ function render() {
   noResults.style.display = 'none';
 
   grid.innerHTML = figs.map(f => {
-    const color = STATUS_COLOR[f.status] || '#888';
-    const label = STATUS_LABEL[f.status] || f.status;
+    const color   = STATUS_COLOR[f.status] || '#888';
+    const label   = STATUS_LABEL[f.status] || f.status;
     const wikiUrl = 'https://tfwiki.net/wiki/' + encodeURIComponent(f.name.replace(/ /g,'_'));
+    const isFlagged = flagged.has(f.id);
     const rankBadge = f.rank != null
       ? `<div class="rank-badge">${f.rank}&thinsp;/&thinsp;10</div>` : '';
     const wrecker  = f.is_wrecker ? `<span class="badge badge-wrecker">Wrecker</span>` : '';
     const combiner = f.combiner   ? `<span class="badge badge-combiner">${f.combiner}</span>` : '';
-
     const hasFooter = f.retailer || f.notes;
     const footer = hasFooter ? `
     <div class="card-footer">
@@ -362,9 +440,14 @@ function render() {
     </div>` : '';
 
     return `
-<div class="card">
+<div class="card${isFlagged ? ' is-flagged' : ''}" id="card-${f.id}">
   <a href="${wikiUrl}" target="_blank" rel="noopener" tabindex="-1">
     <div class="card-img-wrap">
+      <button class="flag-btn${isFlagged ? ' flagged' : ''}"
+              onclick="event.preventDefault();event.stopPropagation();toggleFlag(${f.id})"
+              title="${isFlagged ? 'Remove flag' : 'Flag this image for review'}">
+        &#128681;
+      </button>
       ${rankBadge}
       <img class="card-img" src="${f.image}" alt="${f.name}"
            loading="lazy" onerror="this.src='images/placeholder.png'">
