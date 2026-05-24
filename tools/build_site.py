@@ -215,16 +215,52 @@ def build():
     background: var(--red); border-color: var(--red); color: #fff;
     box-shadow: 0 0 12px var(--glow);
   }}
+  .filter-btn.flag-filter {{ border-color: #ff9f43; color: #ff9f43; }}
+  .filter-btn.flag-filter.active {{ background: #ff9f43; border-color: #ff9f43; color: #0a0a0f; box-shadow: 0 0 12px rgba(255,159,67,0.4); }}
   #result-count {{
     margin-left: auto; color: #444;
     font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;
   }}
 
+  /* ── FLAG BUTTON ── */
+  .flag-btn {{
+    position: absolute; top: 8px; left: 8px;
+    width: 28px; height: 28px;
+    background: rgba(0,0,0,0.6); border: 1px solid #2a2a3e;
+    border-radius: 4px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; line-height: 1;
+    transition: all 0.15s; backdrop-filter: blur(4px);
+    z-index: 2; opacity: 0;
+  }}
+  .card:hover .flag-btn {{ opacity: 1; }}
+  .flag-btn:hover {{ border-color: #ff9f43; background: rgba(255,159,67,0.2); }}
+  .flag-btn.flagged {{
+    opacity: 1; border-color: #ff9f43;
+    background: rgba(255,159,67,0.25);
+  }}
+  .card.is-flagged {{
+    border-color: rgba(255,159,67,0.5);
+    box-shadow: 0 0 0 1px rgba(255,159,67,0.2);
+  }}
+
+  /* ── COPY FLAGGED ── */
+  #copy-flagged {{
+    padding: 8px 14px; border-radius: 6px;
+    border: 1px solid #2a2a3e; background: #12121a;
+    color: #444; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    transition: all 0.2s; display: none;
+  }}
+  #copy-flagged.visible {{ display: block; color: #ff9f43; border-color: #ff9f43; }}
+  #copy-flagged:hover {{ background: rgba(255,159,67,0.1); }}
+
   /* ── GRID ── */
   .grid {{
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px; padding: 20px 24px;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 14px; padding: 20px 24px 32px;
   }}
 
   /* ── CARD ── */
@@ -232,86 +268,88 @@ def build():
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 10px; overflow: hidden;
-    transition: transform 0.25s cubic-bezier(.17,.67,.47,1.27),
-                border-color 0.2s, box-shadow 0.2s;
-    position: relative;
-  }}
-  .card::before {{
-    content: '';
-    position: absolute; inset: 0;
-    border-radius: 10px;
-    background: linear-gradient(135deg, rgba(230,57,70,0.06) 0%, transparent 60%);
-    pointer-events: none; opacity: 0; transition: opacity 0.2s;
+    transition: transform 0.22s cubic-bezier(.17,.67,.47,1.2),
+                border-color 0.18s, box-shadow 0.18s;
+    position: relative; display: flex; flex-direction: column;
   }}
   .card:hover {{
-    transform: translateY(-6px) scale(1.02);
-    border-color: var(--red);
-    box-shadow: 0 8px 32px var(--glow), 0 0 0 1px rgba(230,57,70,0.2);
+    transform: translateY(-5px);
+    border-color: rgba(230,57,70,0.6);
+    box-shadow: 0 10px 36px var(--glow);
   }}
-  .card:hover::before {{ opacity: 1; }}
 
+  /* image area */
   .card-img-wrap {{
-    position: relative; width: 100%; height: 200px;
-    background: #0a0a12; overflow: hidden;
+    position: relative; width: 100%; height: 196px;
+    background: #080810; overflow: hidden; flex-shrink: 0;
   }}
   .card-img {{
     width: 100%; height: 100%;
     object-fit: contain;
-    transition: transform 0.35s ease;
-    padding: 6px;
+    transition: transform 0.3s ease;
+    padding: 8px;
   }}
-  .card:hover .card-img {{ transform: scale(1.08); }}
+  .card:hover .card-img {{ transform: scale(1.06); }}
   .card-img-wrap::after {{
     content: '';
-    position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
+    position: absolute; bottom: 0; left: 0; right: 0; height: 36px;
     background: linear-gradient(transparent, var(--card));
     pointer-events: none;
   }}
 
+  /* rank pill */
   .rank-badge {{
     position: absolute; top: 8px; right: 8px;
-    background: rgba(10,10,18,0.85);
-    border: 1px solid var(--red);
+    background: rgba(0,0,0,0.75); border: 1px solid rgba(230,57,70,0.5);
     color: var(--gold); font-family: 'Orbitron', sans-serif;
-    font-size: 0.7rem; font-weight: 700;
-    padding: 3px 7px; border-radius: 4px;
-    backdrop-filter: blur(4px);
+    font-size: 0.65rem; font-weight: 700;
+    padding: 3px 7px; border-radius: 3px;
+    backdrop-filter: blur(4px); letter-spacing: 0.5px;
   }}
 
-  .card-body {{ padding: 10px 12px 12px; }}
+  /* card body */
+  .card-body {{ padding: 10px 13px 13px; flex: 1; display: flex; flex-direction: column; }}
   .card-name {{
-    font-size: 1rem; font-weight: 700; color: #fff;
+    font-size: 0.97rem; font-weight: 700; color: #e8ecf4;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    letter-spacing: 0.3px; margin-bottom: 2px;
+    letter-spacing: 0.2px; margin-bottom: 1px;
   }}
-  .card-line {{ font-size: 0.75rem; color: #4a4a6a; margin-bottom: 8px; letter-spacing: 0.5px; }}
+  .card-line {{
+    font-size: 0.72rem; color: #3a3a58; margin-bottom: 9px;
+    letter-spacing: 0.4px; text-transform: uppercase;
+  }}
 
-  .badges {{ display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 7px; }}
+  /* status + tag badges */
+  .badges {{ display: flex; gap: 5px; flex-wrap: wrap; }}
   .badge {{
-    font-size: 0.65rem; padding: 2px 8px; border-radius: 20px;
+    font-size: 0.62rem; padding: 2px 8px; border-radius: 3px;
     font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
     white-space: nowrap;
   }}
   .badge-status {{ color: #fff; }}
   .badge-wrecker {{
-    background: transparent; color: #e63946;
-    border: 1px solid #e63946;
+    background: transparent; color: var(--red);
+    border: 1px solid rgba(230,57,70,0.5);
   }}
   .badge-combiner {{
     background: transparent; color: var(--gold);
-    border: 1px solid var(--gold);
+    border: 1px solid rgba(255,214,10,0.4);
   }}
 
-  .card-meta {{ font-size: 0.75rem; color: #3a3a5a; margin-top: 4px; }}
-  .card-meta span {{ color: #555; }}
-  .card-notes {{ font-size: 0.72rem; color: #3a3a5a; margin-top: 4px; font-style: italic; }}
+  /* retailer / notes */
+  .card-footer {{
+    margin-top: auto; padding-top: 8px; border-top: 1px solid #1a1a2a;
+    margin-top: 9px;
+  }}
+  .card-retailer {{ font-size: 0.72rem; color: #484868; }}
+  .card-retailer span {{ color: #585878; }}
+  .card-notes {{ font-size: 0.7rem; color: #363650; margin-top: 3px; font-style: italic; line-height: 1.3; }}
 
   /* ── EMPTY STATE ── */
   .no-results {{
     text-align: center; color: #2a2a4a; padding: 100px 32px;
-    font-family: 'Orbitron', sans-serif; font-size: 1rem; letter-spacing: 2px;
+    font-family: 'Orbitron', sans-serif; font-size: 0.95rem; letter-spacing: 2px;
   }}
-  .no-results::before {{ content: '⚙ '; font-size: 2rem; display: block; margin-bottom: 16px; }}
 
   /* ── SCROLLBAR ── */
   ::-webkit-scrollbar {{ width: 6px; }}
@@ -350,7 +388,6 @@ def build():
   <div class="stat"><div class="stat-num">{stats['preordered']}</div><div class="stat-lbl">Pre-ordered</div></div>
   <div class="stat"><div class="stat-num">{stats['ordered']}</div><div class="stat-lbl">Ordered</div></div>
   <div class="stat"><div class="stat-num">{stats['wreckers']}</div><div class="stat-lbl">Wreckers</div></div>
-  <div class="stat"><div class="stat-num">{stats['avg_rank']}</div><div class="stat-lbl">Avg Rank</div></div>
 </div>
 
 <div class="controls">
@@ -366,6 +403,8 @@ def build():
   <button class="filter-btn" onclick="setFilter('preordered',this)">Pre-ordered</button>
   <button class="filter-btn" onclick="setFilter('ordered',this)">Ordered</button>
   <button class="filter-btn" onclick="setFilter('wrecker',this)">Wreckers</button>
+  <button class="filter-btn flag-filter" onclick="setFilter('flagged',this)">&#128681; Flagged <span id="flag-count"></span></button>
+  <button id="copy-flagged" onclick="copyFlagged()">Copy List</button>
   <span id="result-count"></span>
 </div>
 
@@ -377,6 +416,41 @@ const STATUS_COLOR = {status_color_js};
 const STATUS_LABEL = {status_label_js};
 let figures = [];
 let activeFilter = 'all';
+const STORAGE_KEY = 'tfcollection_flagged';
+
+function getFlagged() {{
+  try {{ return new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')); }}
+  catch {{ return new Set(); }}
+}}
+function saveFlagged(set) {{
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
+}}
+function toggleFlag(id) {{
+  const flagged = getFlagged();
+  flagged.has(id) ? flagged.delete(id) : flagged.add(id);
+  saveFlagged(flagged);
+  render();
+}}
+
+function updateFlagUI() {{
+  const count = getFlagged().size;
+  document.getElementById('flag-count').textContent = count ? `(${{count}})` : '';
+  const copyBtn = document.getElementById('copy-flagged');
+  copyBtn.classList.toggle('visible', count > 0);
+}}
+
+function copyFlagged() {{
+  const flagged = getFlagged();
+  const names = figures
+    .filter(f => flagged.has(f.id))
+    .map(f => `${{f.name}} (${{f.line}})`)
+    .join('\\n');
+  navigator.clipboard.writeText(names).then(() => {{
+    const btn = document.getElementById('copy-flagged');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy List', 1500);
+  }});
+}}
 
 async function init() {{
   const res = await fetch('data.json');
@@ -393,10 +467,13 @@ function setFilter(f, btn) {{
 
 function render() {{
   const q = document.getElementById('search').value.toLowerCase().trim();
+  const flagged = getFlagged();
   let figs = figures;
 
   if (activeFilter === 'wrecker') {{
     figs = figs.filter(f => f.is_wrecker);
+  }} else if (activeFilter === 'flagged') {{
+    figs = figs.filter(f => flagged.has(f.id));
   }} else if (activeFilter !== 'all') {{
     figs = figs.filter(f => f.status === activeFilter);
   }}
@@ -416,6 +493,8 @@ function render() {{
   document.getElementById('result-count').textContent =
     figs.length + ' figure' + (figs.length !== 1 ? 's' : '');
 
+  updateFlagUI();
+
   if (!figs.length) {{
     grid.innerHTML = '';
     noResults.style.display = '';
@@ -424,33 +503,43 @@ function render() {{
   noResults.style.display = 'none';
 
   grid.innerHTML = figs.map(f => {{
-    const color = STATUS_COLOR[f.status] || '#888';
-    const label = STATUS_LABEL[f.status] || f.status;
+    const color   = STATUS_COLOR[f.status] || '#888';
+    const label   = STATUS_LABEL[f.status] || f.status;
     const wikiUrl = 'https://tfwiki.net/wiki/' + encodeURIComponent(f.name.replace(/ /g,'_'));
+    const isFlagged = flagged.has(f.id);
     const rankBadge = f.rank != null
-      ? `<div class="rank-badge">${{f.rank}}/10</div>` : '';
+      ? `<div class="rank-badge">${{f.rank}}&thinsp;/&thinsp;10</div>` : '';
     const wrecker  = f.is_wrecker ? `<span class="badge badge-wrecker">Wrecker</span>` : '';
     const combiner = f.combiner   ? `<span class="badge badge-combiner">${{f.combiner}}</span>` : '';
-    const retailer = f.retailer   ? `<div class="card-meta">&#128722; <span>${{f.retailer}}</span></div>` : '';
-    const notes    = f.notes      ? `<div class="card-notes">${{f.notes}}</div>` : '';
+    const hasFooter = f.retailer || f.notes;
+    const footer = hasFooter ? `
+    <div class="card-footer">
+      ${{f.retailer ? `<div class="card-retailer">From <span>${{f.retailer}}</span></div>` : ''}}
+      ${{f.notes    ? `<div class="card-notes">${{f.notes}}</div>` : ''}}
+    </div>` : '';
 
     return `
-<div class="card">
-  <a href="${{wikiUrl}}" target="_blank" rel="noopener">
+<div class="card${{isFlagged ? ' is-flagged' : ''}}" id="card-${{f.id}}">
+  <a href="${{wikiUrl}}" target="_blank" rel="noopener" tabindex="-1">
     <div class="card-img-wrap">
+      <button class="flag-btn${{isFlagged ? ' flagged' : ''}}"
+              onclick="event.preventDefault();event.stopPropagation();toggleFlag(${{f.id}})"
+              title="${{isFlagged ? 'Remove flag' : 'Flag this image for review'}}">
+        &#128681;
+      </button>
       ${{rankBadge}}
       <img class="card-img" src="${{f.image}}" alt="${{f.name}}"
-           onerror="this.src='images/placeholder.png'">
+           loading="lazy" onerror="this.src='images/placeholder.png'">
     </div>
   </a>
   <div class="card-body">
     <div class="card-name" title="${{f.name}}">${{f.name}}</div>
-    <div class="card-line">${{f.line || '—'}}</div>
+    <div class="card-line">${{f.line || ''}}</div>
     <div class="badges">
       <span class="badge badge-status" style="background:${{color}}">${{label}}</span>
       ${{wrecker}}${{combiner}}
     </div>
-    ${{retailer}}${{notes}}
+    ${{footer}}
   </div>
 </div>`;
   }}).join('');
