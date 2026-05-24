@@ -121,10 +121,21 @@ def add_figure(name, line=None, status="want", rank=None, retailer=None,
         return cur.lastrowid
 
 
-def edit_figure(figure_id: int, **kwargs):
+def edit_figure(figure_id: int, *, clear_fields=None, **kwargs):
+    """
+    Update figure fields.
+
+    - Pass field=value to set a value.
+    - By default, value=None means "leave alone" (so callers can pass
+      partial kwargs safely).
+    - Pass clear_fields=["notes", "retailer"] to explicitly NULL out columns.
+    """
     allowed = {"name", "line", "status", "rank", "retailer", "notes", "combiner", "is_wrecker", "image_url"}
     updates = {k: v for k, v in kwargs.items() if k in allowed and v is not None}
-    if "is_wrecker" in updates:
+    for field in (clear_fields or ()):
+        if field in allowed:
+            updates[field] = None
+    if "is_wrecker" in updates and updates["is_wrecker"] is not None:
         updates["is_wrecker"] = int(updates["is_wrecker"])
     if not updates:
         return False

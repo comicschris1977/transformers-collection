@@ -222,10 +222,15 @@ def main():
         )
         new_ids.append((new_id, r["name"], r["line"]))
 
+    def _apply(db_row, changes):
+        clears  = [f for f, v in changes.items() if v is None]
+        setters = {f: v for f, v in changes.items() if v is not None}
+        db.edit_figure(db_row["id"], clear_fields=clears or None, **setters)
+
     for db_row, _sheet_row, changes in changed_rows:
-        db.edit_figure(db_row["id"], **changes)
+        _apply(db_row, changes)
     for db_row, _sheet_row, changes in renamed_rows:
-        db.edit_figure(db_row["id"], **changes)
+        _apply(db_row, changes)
 
     print(f"  Added {len(new_ids)}, updated {len(changed_rows)}, renamed {len(renamed_rows)}.")
 

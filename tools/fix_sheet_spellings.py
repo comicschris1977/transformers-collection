@@ -15,7 +15,7 @@ SHEET_ID         = "1CuOqorcf4HISBHVAE0DdECzDICNo-FW0w53LjCwu92w"
 # Need write scope this time
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
-CORRECTIONS = {
+NAME_CORRECTIONS = {
     # wrong spelling  : correct spelling
     "Beachcomer":      "Beachcomber",
     "Blugeon":         "Bludgeon",
@@ -27,6 +27,11 @@ CORRECTIONS = {
     "Wierdwolf":       "Weirdwolf",
     "Bone Shaker Hot Wheels": "Bone Shaker",
     "Ironfist / Fisitron":    "Ironfist",
+}
+
+LINE_CORRECTIONS = {
+    # wrong : correct  (LINE column)
+    "Wait for  AotP": "Wait for AotP",   # double space
 }
 
 def get_credentials():
@@ -64,26 +69,30 @@ def main():
         return
 
     header = rows[0]
-    try:
-        name_col = header.index("NAME")
-    except ValueError:
-        print(f"No NAME column found. Headers: {header}")
-        return
+    col_map = {}
+    for col_name in ("NAME", "LINE"):
+        try:
+            col_map[col_name] = header.index(col_name)
+        except ValueError:
+            print(f"No {col_name} column found. Headers: {header}")
+
+    col_corrections = {
+        col_map.get("NAME"): NAME_CORRECTIONS,
+        col_map.get("LINE"): LINE_CORRECTIONS,
+    }
 
     updates = []
     for row_idx, row in enumerate(rows[1:], start=2):  # 1-indexed, skip header
-        if len(row) <= name_col:
-            continue
-        cell_val = row[name_col].strip()
-        if cell_val in CORRECTIONS:
-            new_val = CORRECTIONS[cell_val]
-            col_letter = chr(ord("A") + name_col)
-            cell_range = f"{col_letter}{row_idx}"
-            updates.append({
-                "range": cell_range,
-                "values": [[new_val]],
-            })
-            print(f"  Row {row_idx}: '{cell_val}' -> '{new_val}'")
+        for col_idx, corrections in col_corrections.items():
+            if col_idx is None or len(row) <= col_idx:
+                continue
+            cell_val = row[col_idx].strip()
+            if cell_val in corrections:
+                new_val = corrections[cell_val]
+                col_letter = chr(ord("A") + col_idx)
+                cell_range = f"{col_letter}{row_idx}"
+                updates.append({"range": cell_range, "values": [[new_val]]})
+                print(f"  Row {row_idx} {col_letter}: '{cell_val}' -> '{new_val}'")
 
     if not updates:
         print("No corrections needed — sheet already up to date.")

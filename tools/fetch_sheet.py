@@ -18,7 +18,10 @@ CREDENTIALS_FILE = r"C:\Projects\Email Helper\credentials.json"
 TOKEN_FILE = os.path.join(os.path.dirname(__file__), "..", "sheets_token.json")
 OUTPUT_CSV = os.path.join(os.path.dirname(__file__), "..", "collection_raw.csv")
 
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+# Use the write scope across all scripts so the shared token doesn't get into
+# a "readonly was issued, now write is asked" refresh-error loop.  Read is a
+# subset of write, so this still works for fetch-only use.
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 SHEET_ID = "1CuOqorcf4HISBHVAE0DdECzDICNo-FW0w53LjCwu92w"
 GID = "0"
