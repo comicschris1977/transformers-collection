@@ -32,6 +32,25 @@ HEADERS = {
     "Accept": "application/json",
 }
 
+# Lines treated as "character art placeholder" — no specific toy to show
+PLACEHOLDER_LINES = {"ko", "wait"}   # matched with .lower().startswith()
+
+AF411_BASE = "https://www.actionfigure411.com/transformers"
+
+# actionfigure411 visual guide slugs per line code
+AF411_GUIDES = {
+    "WFC":           ["war-for-cybertron-siege-series", "war-for-cybertron-earthrise", "war-for-cybertron-kingdom"],
+    "SS86":          ["studio-series"],
+    "SS":            ["studio-series"],
+    "Legacy":        ["legacy-evolution", "legacy-united", "legacy-series"],
+    "AotP":          ["age-of-the-primes"],
+    "PotPrimes":     ["power-of-the-primes"],
+    "PotP":          ["power-of-the-primes"],
+    "Titans Return": ["titans-return"],
+    "Combiner Wars": ["combiner-wars"],
+    "Thrilling 30":  ["generations"],
+}
+
 # --------------------------------------------------------------------------
 # Map our line codes to ordered lists of TFWiki section names to search for
 # --------------------------------------------------------------------------
@@ -81,9 +100,94 @@ SKIP_KEYWORDS = [
     "packaging", "box", "art", "concept", "early", "stock",
 ]
 
+# Words in filenames that disqualify a character-art candidate
+SKIP_INFOBOX = [
+    "symbol", "logo", "icon", "banner", "flag", "nav",
+    "placeholder", "stub", "noimage", "insignia", "badge",
+    "featured", "vanguard", "con-g2", "allspark", "all_spark",
+    "primus", "matrix", "energon", "ozsa", "timeline",
+]
+
 
 def clean_name(name: str) -> str:
     return re.sub(r"\s*\*.*", "", name).strip()
+
+
+def is_placeholder_line(line: str) -> bool:
+    """KO and Wait-for* lines get character art instead of toy-specific photos."""
+    if not line:
+        return False
+    line_lower = line.lower()
+    return any(line_lower.startswith(p) for p in PLACEHOLDER_LINES)
+
+
+# --------------------------------------------------------------------------
+# Character-art (infobox) fetcher — used for KO / Wait-for figures
+# --------------------------------------------------------------------------
+
+def _score_infobox(filename: str) -> int:
+    name = filename.lower()
+    if any(kw in name for kw in SKIP_INFOBOX):
+        return -999
+    score = 0
+    if name.endswith(".jpg") or name.endswith(".jpeg"):
+        score += 10
+    if any(kw in name for kw in ["art", "cartoon", "animation", "g1", "tf"]):
+        score += 3
+    if len(filename) < 10:
+        score -= 5
+    return score
+
+
+def get_infobox_image(char_name: str):
+    """
+    Return (url, filename, page) of the best character-art image from the
+    TFWiki main page.  Tries {Name} then {Name}_(G1).
+    Returns (None, None, None) on failure.
+    """
+    clean = clean_name(char_name).replace(" ", "_")
+    for page in [clean, clean + "_(G1)"]:
+        try:
+            d = api_call({"action": "parse", "page": page, "prop": "images"})
+            if "error" in d:
+                continue
+            imgs = d.get("parse", {}).get("images", [])
+            scored = sorted(
+                [(_score_infobox(img), img) for img in imgs
+                 if img.lower().endswith((".jpg", ".jpeg", ".png"))],
+                reverse=True,
+            )
+            candidates = [img for sc, img in scored if sc > 0]
+            for candidate in candidates[:5]:
+                url = get_image_url(candidate)
+                time.sleep(0.3)
+                if url:
+                    return url, candidate, page
+        except Exception:
+            pass
+        time.sleep(0.5)
+    return None, None, None
+
+
+# --------------------------------------------------------------------------
+# actionfigure411 lazy index
+# --------------------------------------------------------------------------
+
+_af411_index: dict | None = None
+
+
+def _get_af411_index() -> dict:
+    global _af411_index
+    if _af411_index is None:
+        try:
+            import fetch_af411 as af411
+            figures = db.list_figures()
+            all_lines = list(set(f["line"] or "" for f in figures))
+            _af411_index = af411.load_or_build_index(all_lines)
+            _af411_index.update(af411.MANUAL_PAIRS)
+        except Exception:
+            _af411_index = {}
+    return _af411_index
 
 
 def api_call(params: dict) -> dict:
@@ -294,7 +398,14 @@ def fetch_figure(figure_id: int, name: str, line) -> str:
     wiki_name = cn.replace(" ", "_")
     dest = IMAGES_DIR / (str(figure_id) + ".jpg")
 
-    # Strategy 1: {Name}/toys
+    # KO / Wait-for* figures → use main character art (no specific toy to show)
+    if is_placeholder_line(line):
+        url, fname, page = get_infobox_image(cn)
+        if url and download(url, dest):
+            return "images/" + dest.name
+        return None
+
+    # Strategy 1: {Name}/toys  (TFWiki toys subpage, line-specific section)
     result = try_toys_page(wiki_name + "/toys", line, dest)
     if result:
         return result
@@ -304,12 +415,22 @@ def fetch_figure(figure_id: int, name: str, line) -> str:
     if result:
         return result
 
-    # Strategy 3: Main character page (minor chars like Jalopy with no /toys subpage)
+    # Strategy 3: actionfigure411.com (great for Micromasters and recent lines)
+    try:
+        index = _get_af411_index()
+        import fetch_af411 as af411
+        result = af411.fetch_figure_af411(figure_id, name, line or "", index)
+        if result:
+            return result
+    except Exception:
+        pass
+
+    # Strategy 4: Main character page (minor chars like Jalopy with no /toys subpage)
     result = try_main_page(wiki_name, dest)
     if result:
         return result
 
-    # Strategy 4: File namespace search
+    # Strategy 5: File namespace search
     result = file_search_fallback(cn, line, dest)
     if result:
         return result
