@@ -414,6 +414,15 @@ const TFWIKI_OVERRIDES = {
   'Bone Shaker':      'Bone_Shaker',
   // Quintesson Judge (G1) — user labels as "Quintesson *pit of judgement"
   'Quintesson':       'Quintesson_Judge_(G1)',
+  // Hun-Grrr's TFWiki page uses double-r ("Hun-Gurrr")
+  'Hun-Grrr':         'Hun-Gurrr_(G1)',
+  // Minerva's TFWiki page has an unusual disambiguator
+  'Minerva':          'Minerva_(G1_robot)',
+  // The 2015 RID Strongarm character (Legacy figure)
+  'Strongarm':        'Strongarm_(RID)',
+  // Modern-toy continuities the user has on the sheet
+  'Jhiaxus':          'Jhiaxus_(G2)',
+  'Road Rocket':      'Road_Rocket_(G2)',
 };
 
 function tfwikiUrl(name) {
@@ -422,7 +431,12 @@ function tfwikiUrl(name) {
   if (TFWIKI_OVERRIDES[clean]) {
     return 'https://tfwiki.net/wiki/' + TFWIKI_OVERRIDES[clean];
   }
-  return 'https://tfwiki.net/wiki/' + encodeURIComponent(clean.replace(/ /g, '_')) + '_(G1)';
+  // Title-case so "BumbleBee" -> "Bumblebee" (TFWiki URLs are case-sensitive
+  // after the first letter; user's camelCase typo would 404)
+  const titled = clean.split(/\s+/)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
+  return 'https://tfwiki.net/wiki/' + encodeURIComponent(titled.replace(/ /g, '_')) + '_(G1)';
 }
 
 async function init() {
