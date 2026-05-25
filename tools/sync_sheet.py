@@ -253,7 +253,27 @@ def main():
     # 7. Rebuild site
     print("\nRebuilding site...")
     build_site.build()
-    print("Done. Review changes, then commit & push when ready.")
+
+    # 8. Quick TFWiki link audit for any newly-added characters. Use
+    #    audit_links's helpers directly so we only check the new names
+    #    (full audit is `$PYTHON tools/audit_links.py`).
+    if new_ids:
+        print("\nChecking TFWiki links for new figures...")
+        import audit_links
+        any_dead = False
+        for fid, name, _line in new_ids:
+            url = __import__("tfwiki_links").tfwiki_url(name)
+            status = audit_links._head(url)
+            if status != 200:
+                any_dead = True
+                print(f"  DEAD ({status})  {name}  ->  {url}")
+                suggestion = audit_links._suggest_override(name)
+                if suggestion:
+                    print(f"            add to tfwiki_links.py:  '{name}': '{suggestion}',")
+        if not any_dead:
+            print("  all new characters resolve cleanly.")
+
+    print("\nDone. Review changes, then commit & push when ready.")
 
 
 if __name__ == "__main__":

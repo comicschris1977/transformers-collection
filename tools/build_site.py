@@ -9,6 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 import db
+import tfwiki_links
 
 SITE_DIR = Path(__file__).parent.parent / "docs"
 
@@ -72,9 +73,10 @@ def build():
     with open(SITE_DIR / "data.json", "w", encoding="utf-8") as fh:
         json.dump(data, fh, ensure_ascii=False)
 
-    status_color_js = json.dumps(STATUS_COLOR)
-    status_label_js = json.dumps(STATUS_LABEL)
-    today           = __import__("datetime").date.today()
+    status_color_js     = json.dumps(STATUS_COLOR)
+    status_label_js     = json.dumps(STATUS_LABEL)
+    tfwiki_overrides_js = json.dumps(tfwiki_links.TFWIKI_OVERRIDES, sort_keys=True)
+    today               = __import__("datetime").date.today()
     with_images     = len([f for f in figures if f["image_url"] and not f["image_url"].startswith("http")])
 
     html = f"""<!DOCTYPE html>
@@ -469,73 +471,10 @@ function clearFlagged() {{
   render();
 }}
 
-// TFWiki page name overrides for characters whose canonical page is NOT
-// "<Name>_(G1)". Default rule: strip *suffix continuity tags, then append
-// _(G1). User preference: always link to the G1 character page when possible.
-const TFWIKI_OVERRIDES = {{
-  // The Thirteen Primes — no _(G1) page; they live at their bare name
-  'Liege Maximo':     'Liege_Maximo',
-  'Quintus Prime':    'Quintus_Prime',
-  'Solus Prime':      'Solus_Prime',
-  'Onyx Prime':       'Onyx_Prime',
-  'Micronus Prime':   'Micronus_Prime',
-  'Prima Prime':      'Prima',
-  'Alchemist Prime':  'Maccadam',
-  'Megatronus Prime': 'The_Fallen_(G1)',
-  // Star Optimus is an AotP variant of OP — link to G1 OP
-  'Star Optimus':     'Optimus_Prime_(G1)',
-  // Vector Prime is a Cybertron-line character
-  'Vector Prime':     'Vector_Prime_(Cybertron)',
-  // Collaborative crossovers — bare name pages
-  'Mandalorian':      'The_Mandalorian',
-  'Ectotron':         'Ectotron',
-  'Agent Knight':     'Agent_Knight',
-  'Bone Shaker':      'Bone_Shaker',
-  // Quintesson Judge (G1) — user labels as "Quintesson *pit of judgement"
-  'Quintesson':       'Quintesson_Judge_(G1)',
-  // Hun-Grrr's TFWiki page uses double-r ("Hun-Gurrr")
-  'Hun-Grrr':         'Hun-Gurrr_(G1)',
-  // Minerva's TFWiki page has an unusual disambiguator
-  'Minerva':          'Minerva_(G1_robot)',
-  // The 2015 RID Strongarm character (Legacy figure)
-  'Strongarm':        'Strongarm_(RID)',
-  // Modern-toy continuities the user has on the sheet
-  'Jhiaxus':          'Jhiaxus_(G2)',
-  'Road Rocket':      'Road_Rocket_(G2)',
-
-  // ── Bare-name characters (no _(G1) page; TFWiki article is just the name) ──
-  'Amalgamous Prime':    'Amalgamous_Prime',
-  'Battleslash':         'Battleslash',
-  'Dracodon':            'Dracodon',
-  'Gigawatt':            'Gigawatt',
-  'Jalopy':              'Jalopy',
-  'Matrix of Leadership':'Matrix_of_Leadership',
-  'Nexus Prime':         'Nexus_Prime',
-  'Pointblank':          'Pointblank',
-  'Rattrap':             'Rattrap',
-  'Red Heat':            'Red_Heat',
-  'Roadtrap':            'Roadtrap',
-  'Six Shot':            'Six_Shot',
-  'Skullgrin':           'Skullgrin',
-  'Spike':               'Spike',
-  'Sweeps':              'Sweeps',
-  'Trip-Up':             'Trip-Up',
-  'Horri-Bull':          'Horri-Bull',
-
-  // ── Megatronus Prime: prefer the explicit "Megatronus_Prime" article
-  //    (was The_Fallen_(G1) before — that exists but Megatronus_Prime
-  //    is the AotP-focused article)
-  'Megatronus Prime':    'Megatronus_Prime',
-
-  // ── Special user-naming -> canonical G1 character page ──
-  'Ironhide BD':         'Ironhide_(G1)',      // Battle Damage variant of G1 Ironhide
-  'Wheeljack Origins':   'Wheeljack_(G1)',     // Origins is just a deco of G1 Wheeljack
-  'Wild Ride':           'Wildrider_(G1)',     // Hasbro renamed Wildrider to "Wild Ride"
-  'Wreck Gar':           'Wreck-Gar_(G1)',     // canonical spelling has a hyphen
-  'Leadfoot G2':         'Leadfoot_(G2)',      // user labels his G2 variant
-  // Daddy-O comes paired with Trip-Up — TFWiki documents him under Trip-Up's page
-  'Daddy-O':             'Trip-Up',
-}};
+// TFWiki page-name overrides for characters whose canonical page is NOT
+// "<Name>_(G1)". Injected from tools/tfwiki_links.py — single source of truth.
+// To add a new override: edit tools/tfwiki_links.py and rebuild.
+const TFWIKI_OVERRIDES = {tfwiki_overrides_js};
 
 function tfwikiUrl(name) {{
   // Strip *<continuity> suffix the user uses for movie/animated variants

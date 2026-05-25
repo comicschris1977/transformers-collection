@@ -106,6 +106,31 @@ Two tools handle image work:
 3. **af411** for modern lines TFWiki hasn't documented yet
 4. **Hasbro Pulse / TFW2005 / direct URL from user** for everything else
 
+### TFWiki link maintenance
+
+The character-name -> page-name override map lives in
+**`tools/tfwiki_links.py`** — single source of truth. `build_site.py`
+injects it into the site JS, and `audit_links.py` reads it directly.
+
+After any sheet sync (or whenever a new character is added), run:
+```
+$PYTHON tools/audit_links.py
+```
+
+It HEAD-checks every figure's resolved TFWiki URL. For each 404 it tries
+several common patterns (bare name, `_(G1)`, `_(G2)`, `_(Animated)`,
+`_(Cybertron)`, `_(Prime)`, `_(RID)`, `_(Movie)`) and prints a one-line
+override snippet you can paste into `tfwiki_links.py`.
+
+`sync_sheet.py` runs the audit automatically on newly-added characters, so
+sheet-driven additions surface dead links during sync.
+
+Flags:
+- `--quiet` — one line per dead link only (good for CI/grep)
+- `NAME` (positional) — check a single character
+
+Exit code: 0 if everything resolves, 1 if any are dead.
+
 ### Page-name gotchas to remember
 
 - The Thirteen Primes (Liege Maximo, Quintus, Solus, Onyx, Micronus) — no
