@@ -5,16 +5,21 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Transformers Collection</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@600;700;900&display=swap');
 
   :root {
-    --red:    #e63946;
-    --gold:   #ffd60a;
-    --steel:  #adb5bd;
-    --dark:   #0a0a0f;
-    --card:   #12121a;
-    --border: #1e1e2e;
-    --glow:   rgba(230,57,70,0.35);
+    --red:       #ed1c24;  /* Hasbro brand red */
+    --red-deep:  #b00d12;
+    --gold:      #ffd60a;
+    --steel:     #9aa0a8;
+    --dark:      #07070b;
+    --dark-2:    #0d0d14;
+    --card:      #14141d;
+    --card-hi:   #1a1a26;
+    --border:    #22222e;
+    --text:      #e6e8ee;
+    --text-mute: #6a6a82;
+    --glow:      rgba(237,28,36,0.32);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,89 +27,97 @@
   body {
     font-family: 'Rajdhani', sans-serif;
     background: var(--dark);
-    color: #cdd6f4;
+    color: var(--text);
     min-height: 100vh;
     background-image:
-      linear-gradient(rgba(230,57,70,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(230,57,70,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
+      radial-gradient(ellipse at top, rgba(237,28,36,0.06) 0%, transparent 55%),
+      linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+    background-size: auto, 48px 48px, 48px 48px;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* ── HEADER ── */
   header {
     position: relative;
     overflow: hidden;
-    padding: 36px 40px 28px;
-    background: linear-gradient(135deg, #0d0d14 0%, #12121f 60%, #1a0a0e 100%);
-    border-bottom: 2px solid var(--red);
-    box-shadow: 0 4px 40px var(--glow);
+    padding: 28px 40px 24px;
+    background:
+      linear-gradient(180deg, rgba(237,28,36,0.06) 0%, transparent 100%),
+      linear-gradient(135deg, #0a0a10 0%, #14141d 55%, #1d0c0f 100%);
+    border-bottom: 1px solid rgba(237,28,36,0.35);
+    box-shadow: 0 1px 0 rgba(237,28,36,0.5), 0 8px 32px rgba(0,0,0,0.5);
   }
   header::before {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: repeating-linear-gradient(
       -45deg,
-      transparent,
-      transparent 18px,
-      rgba(230,57,70,0.04) 18px,
-      rgba(230,57,70,0.04) 19px
+      transparent, transparent 22px,
+      rgba(237,28,36,0.025) 22px, rgba(237,28,36,0.025) 23px
     );
     pointer-events: none;
   }
-  .header-inner { position: relative; display: flex; align-items: center; gap: 20px; }
-  .tf-logo {
-    width: 64px; height: 64px; flex-shrink: 0;
-    filter: drop-shadow(0 0 12px var(--red));
+  .header-inner {
+    position: relative; display: flex; align-items: center; gap: 22px;
+    max-width: 1600px; margin: 0 auto;
   }
-  header h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(1.4rem, 4vw, 2.4rem);
-    font-weight: 900;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    line-height: 1.1;
-    text-shadow: 0 0 20px var(--red), 0 0 40px rgba(230,57,70,0.4);
+  .tf-symbol {
+    width: 68px; height: 68px; flex-shrink: 0;
+    object-fit: contain;
+    filter: drop-shadow(0 0 14px var(--glow));
   }
-  header h1 span { color: var(--red); }
-  .header-sub { color: var(--steel); font-size: 0.85rem; letter-spacing: 2px; margin-top: 4px; }
+  .header-title {
+    display: flex; flex-direction: column; gap: 6px; min-width: 0;
+  }
+  .tf-wordmark {
+    height: 42px; max-width: 100%;
+    object-fit: contain; object-position: left center;
+    filter: drop-shadow(0 0 18px rgba(237,28,36,0.35));
+  }
+  .header-sub {
+    color: var(--steel); font-size: 0.78rem;
+    letter-spacing: 3px; text-transform: uppercase;
+    font-weight: 600;
+  }
+  .header-sub .dot { color: var(--red); margin: 0 8px; }
 
   /* ── STATS BAR ── */
   .stats {
-    display: flex; gap: 2px; flex-wrap: wrap;
-    background: #0d0d14;
+    display: flex; gap: 1px;
+    background: var(--dark-2);
     border-bottom: 1px solid var(--border);
   }
   .stat {
     flex: 1; min-width: 90px;
-    padding: 16px 12px;
+    padding: 18px 12px 14px;
     text-align: center;
     position: relative;
-    border-right: 1px solid var(--border);
-    transition: background 0.2s;
+    background: var(--dark-2);
+    transition: background 0.18s;
   }
-  .stat:hover { background: #151520; }
+  .stat:hover { background: #15151f; }
   .stat-num {
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.7rem; font-weight: 700;
+    font-size: 1.85rem; font-weight: 700;
     color: var(--red);
-    text-shadow: 0 0 12px var(--glow);
+    text-shadow: 0 0 14px var(--glow);
+    line-height: 1;
   }
   .stat-lbl {
-    font-size: 0.7rem; color: #555;
-    text-transform: uppercase; letter-spacing: 1.5px;
-    margin-top: 2px;
+    font-size: 0.68rem; color: var(--text-mute);
+    text-transform: uppercase; letter-spacing: 2px;
+    margin-top: 6px; font-weight: 600;
   }
 
   /* ── CONTROLS ── */
   .controls {
-    padding: 16px 24px;
+    padding: 14px 24px;
     display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
-    background: #0d0d14;
+    background: rgba(13,13,20,0.92);
     border-bottom: 1px solid var(--border);
     position: sticky; top: 0; z-index: 10;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
   }
   .search-wrap {
     position: relative; flex: 1; min-width: 220px; max-width: 380px;
@@ -190,32 +203,33 @@
   .card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 10px; overflow: hidden;
-    transition: transform 0.22s cubic-bezier(.17,.67,.47,1.2),
+    border-radius: 8px; overflow: hidden;
+    transition: transform 0.2s cubic-bezier(.17,.67,.47,1.2),
                 border-color 0.18s, box-shadow 0.18s;
     position: relative; display: flex; flex-direction: column;
   }
   .card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(230,57,70,0.6);
-    box-shadow: 0 10px 36px var(--glow);
+    transform: translateY(-4px);
+    border-color: rgba(237,28,36,0.55);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.55), 0 0 24px var(--glow);
   }
 
   /* image area */
   .card-img-wrap {
     position: relative; width: 100%; height: 196px;
-    background: #080810; overflow: hidden; flex-shrink: 0;
+    background: linear-gradient(180deg, #06060c 0%, #0a0a12 100%);
+    overflow: hidden; flex-shrink: 0;
   }
   .card-img {
     width: 100%; height: 100%;
     object-fit: contain;
     transition: transform 0.3s ease;
-    padding: 8px;
+    padding: 10px;
   }
-  .card:hover .card-img { transform: scale(1.06); }
+  .card:hover .card-img { transform: scale(1.05); }
   .card-img-wrap::after {
     content: '';
-    position: absolute; bottom: 0; left: 0; right: 0; height: 36px;
+    position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
     background: linear-gradient(transparent, var(--card));
     pointer-events: none;
   }
@@ -223,36 +237,43 @@
   /* rank pill */
   .rank-badge {
     position: absolute; top: 8px; right: 8px;
-    background: rgba(0,0,0,0.75); border: 1px solid rgba(230,57,70,0.5);
+    background: rgba(0,0,0,0.78);
+    border: 1px solid rgba(237,28,36,0.55);
     color: var(--gold); font-family: 'Orbitron', sans-serif;
     font-size: 0.65rem; font-weight: 700;
     padding: 3px 7px; border-radius: 3px;
     backdrop-filter: blur(4px); letter-spacing: 0.5px;
+    z-index: 2;
   }
 
   /* card body */
-  .card-body { padding: 10px 13px 13px; flex: 1; display: flex; flex-direction: column; }
+  .card-body { padding: 12px 13px 13px; flex: 1; display: flex; flex-direction: column; }
   .card-name {
-    font-size: 0.97rem; font-weight: 700; color: #e8ecf4;
+    font-size: 1rem; font-weight: 700; color: var(--text);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    letter-spacing: 0.2px; margin-bottom: 1px;
+    letter-spacing: 0.2px; margin-bottom: 2px; line-height: 1.2;
   }
   .card-line {
-    font-size: 0.72rem; color: #3a3a58; margin-bottom: 9px;
-    letter-spacing: 0.4px; text-transform: uppercase;
+    font-size: 0.7rem; color: var(--text-mute); margin-bottom: 10px;
+    letter-spacing: 0.6px; text-transform: uppercase; font-weight: 600;
   }
 
   /* status + tag badges */
-  .badges { display: flex; gap: 5px; flex-wrap: wrap; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
   .badge {
-    font-size: 0.62rem; padding: 2px 8px; border-radius: 3px;
+    font-size: 0.6rem; padding: 3px 8px; border-radius: 3px;
     font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
-    white-space: nowrap;
+    white-space: nowrap; line-height: 1.4;
   }
   .badge-status { color: #fff; }
+  /* Wrecker badge replaced by the Wreckers logo image */
   .badge-wrecker {
-    background: transparent; color: var(--red);
-    border: 1px solid rgba(230,57,70,0.5);
+    display: inline-flex; align-items: center;
+    height: 18px; padding: 0; border: none; background: transparent;
+  }
+  .badge-wrecker img {
+    height: 22px; width: auto; display: block;
+    filter: drop-shadow(0 0 6px rgba(237,28,36,0.45));
   }
   .badge-combiner {
     background: transparent; color: var(--gold);
@@ -284,22 +305,10 @@
 
 <header>
   <div class="header-inner">
-    <!-- Autobot symbol SVG -->
-    <svg class="tf-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="50,5 95,28 95,72 50,95 5,72 5,28" fill="#1a0a0e" stroke="#e63946" stroke-width="3"/>
-      <polygon points="50,18 80,34 80,66 50,82 20,66 20,34" fill="none" stroke="#e63946" stroke-width="1.5" opacity="0.4"/>
-      <polygon points="50,25 62,38 62,58 50,68 38,58 38,38" fill="#e63946" opacity="0.9"/>
-      <circle cx="50" cy="46" r="6" fill="#ffd60a"/>
-      <line x1="50" y1="5" x2="50" y2="25" stroke="#e63946" stroke-width="2"/>
-      <line x1="5" y1="28" x2="20" y2="34" stroke="#e63946" stroke-width="2"/>
-      <line x1="95" y1="28" x2="80" y2="34" stroke="#e63946" stroke-width="2"/>
-      <line x1="5" y1="72" x2="20" y2="66" stroke="#e63946" stroke-width="2"/>
-      <line x1="95" y1="72" x2="80" y2="66" stroke="#e63946" stroke-width="2"/>
-      <line x1="50" y1="95" x2="50" y2="68" stroke="#e63946" stroke-width="2"/>
-    </svg>
-    <div>
-      <h1><span>Transformers</span> Collection</h1>
-      <div class="header-sub">Updated 2026-05-25 &nbsp;·&nbsp; 238/238 figures with images</div>
+    <img class="tf-symbol" src="assets/autobot_symbol.png" alt="Autobots">
+    <div class="header-title">
+      <img class="tf-wordmark" src="assets/transformers_logo.png" alt="Transformers">
+      <div class="header-sub">Collection<span class="dot">·</span>Updated 2026-05-25<span class="dot">·</span>238/238 figures</div>
     </div>
   </div>
 </header>
@@ -467,7 +476,8 @@ function render() {
     const isFlagged = flagged.has(f.id);
     const rankBadge = f.rank != null
       ? `<div class="rank-badge">${f.rank}&thinsp;/&thinsp;10</div>` : '';
-    const wrecker  = f.is_wrecker ? `<span class="badge badge-wrecker">Wrecker</span>` : '';
+    const wrecker  = f.is_wrecker
+      ? `<span class="badge badge-wrecker" title="Wrecker"><img src="assets/wreckers_logo.png" alt="Wrecker"></span>` : '';
     const combiner = f.combiner   ? `<span class="badge badge-combiner">${f.combiner}</span>` : '';
     const hasFooter = f.retailer || f.notes;
     const footer = hasFooter ? `
