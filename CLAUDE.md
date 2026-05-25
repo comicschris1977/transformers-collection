@@ -82,7 +82,27 @@ When the user asks about a character's lore, alt modes, release dates, pricing, 
   are a good fallback when TFWiki/Pulse lack a clean shot)
 - **actionfigure411.com** — visual guides indexed by line, useful when TFWiki is
   missing a modern figure's photo
+- **hero.fandom.com** — Fandom "Heroes Wiki" character pages often have clean
+  G1 boxart-style character art for Wait-for figures TFWiki is missing.
+  Note: Fandom's CDN serves WebP via content negotiation even when the URL
+  ends in .jpg — smart_fetch / inline scripts must handle webp→jpg conversion.
 - **BBTS / Amazon** — current pricing and availability
+
+### WebP handling
+
+Several sources (Fandom Wikia, actionfigure411 CDN, Hasbro Pulse) serve WebP
+images even when the URL extension is `.jpg`. Use Pillow to convert before
+saving — image files in `docs/images/` should always be true JPEGs so older
+browsers and image-processing tools work consistently:
+
+```python
+from PIL import Image
+import io
+if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+    Image.open(io.BytesIO(data)).convert("RGB").save(dest, "JPEG", quality=90)
+else:
+    dest.write_bytes(data)
+```
 
 ## Image Fetching
 
