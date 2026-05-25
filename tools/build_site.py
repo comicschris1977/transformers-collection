@@ -208,25 +208,32 @@ def build():
   }}
   /* Chrome-gradient micro-copy */
   .chrome-row {{
-    display: flex; gap: 18px; align-items: center;
-    font-family: 'Orbitron', sans-serif; font-size: 0.7rem;
-    font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+    display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+    font-family: 'Orbitron', sans-serif; font-size: 0.78rem;
+    font-weight: 800; letter-spacing: 4px; text-transform: uppercase;
   }}
+  /* Brighter chrome gradient + bigger backdrop so it reads on dark BG */
   .chrome-text {{
     background: linear-gradient(180deg,
-      #fff 0%, #cfd2e0 35%, #6a6e85 50%, #cfd2e0 65%, #fff 100%);
+      #ffffff 0%, #e8ebf5 25%, #c8ccd9 50%, #e8ebf5 75%, #ffffff 100%);
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent; color: transparent;
-    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.6));
+    filter:
+      drop-shadow(0 0 6px rgba(0,0,0,0.85))
+      drop-shadow(0 0 12px rgba(184,41,255,0.4));
   }}
   .chrome-pipe {{
-    color: var(--red); text-shadow: 0 0 8px var(--red-glow);
+    color: var(--red);
+    text-shadow: 0 0 6px var(--red-glow), 0 0 12px rgba(237,28,36,0.5);
   }}
   .chrome-purple {{
     background: linear-gradient(180deg,
-      #f3d6ff 0%, var(--purple) 50%, #f3d6ff 100%);
+      #ffffff 0%, #f3d6ff 35%, #d896ff 60%, #f3d6ff 85%, #ffffff 100%);
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent;
+    filter:
+      drop-shadow(0 0 6px rgba(0,0,0,0.85))
+      drop-shadow(0 0 10px var(--purple-glow));
   }}
 
   /* ── SYNTHWAVE HORIZON (outrun) ── */
