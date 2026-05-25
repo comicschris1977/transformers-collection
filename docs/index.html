@@ -47,17 +47,11 @@
   header {
     position: relative;
     overflow: hidden;
-    padding: 36px 40px 30px;
+    padding: 28px 40px 80px;  /* bottom space for horizon */
     background:
-      radial-gradient(ellipse 70% 100% at 30% 0%, rgba(237,28,36,0.18) 0%, transparent 60%),
-      radial-gradient(ellipse 70% 100% at 80% 100%, rgba(184,41,255,0.22) 0%, transparent 60%),
-      linear-gradient(135deg, #08080f 0%, #0e0e1a 55%, #14081f 100%);
-    border-bottom: 2px solid transparent;
-    border-image: linear-gradient(90deg, var(--red) 0%, var(--purple) 100%) 1;
-    box-shadow:
-      0 1px 0 rgba(237,28,36,0.5),
-      0 2px 24px rgba(184,41,255,0.18),
-      0 8px 32px rgba(0,0,0,0.6);
+      radial-gradient(ellipse 70% 100% at 30% 0%, rgba(237,28,36,0.20) 0%, transparent 60%),
+      radial-gradient(ellipse 70% 100% at 80% 100%, rgba(184,41,255,0.28) 0%, transparent 60%),
+      linear-gradient(180deg, #08080f 0%, #0a0a14 55%, #160820 100%);
   }
   /* Synthwave perspective grid */
   header::before {
@@ -66,16 +60,16 @@
     background:
       repeating-linear-gradient(
         180deg,
-        transparent 0px, transparent 26px,
-        rgba(184,41,255,0.06) 26px, rgba(184,41,255,0.06) 27px
+        transparent 0px, transparent 28px,
+        rgba(184,41,255,0.07) 28px, rgba(184,41,255,0.07) 29px
       ),
       repeating-linear-gradient(
         90deg,
-        transparent 0px, transparent 60px,
-        rgba(237,28,36,0.05) 60px, rgba(237,28,36,0.05) 61px
+        transparent 0px, transparent 64px,
+        rgba(237,28,36,0.06) 64px, rgba(237,28,36,0.06) 65px
       );
     pointer-events: none;
-    mask-image: linear-gradient(180deg, transparent 0%, #000 40%, #000 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 35%, #000 100%);
   }
   /* Scanlines */
   header::after {
@@ -83,32 +77,116 @@
     position: absolute; inset: 0;
     background: repeating-linear-gradient(
       0deg,
-      rgba(255,255,255,0.018) 0px, rgba(255,255,255,0.018) 1px,
+      rgba(255,255,255,0.022) 0px, rgba(255,255,255,0.022) 1px,
       transparent 1px, transparent 3px
     );
     pointer-events: none; mix-blend-mode: overlay;
   }
   .header-inner {
-    position: relative; display: flex; align-items: center; gap: 28px;
+    position: relative; display: flex; align-items: center; gap: 36px;
     max-width: 1600px; margin: 0 auto;
+    z-index: 2;
   }
   .tf-symbol {
-    width: 84px; height: 84px; flex-shrink: 0;
-    object-fit: contain;
+    width: clamp(110px, 14vw, 180px);
+    height: clamp(110px, 14vw, 180px);
+    flex-shrink: 0; object-fit: contain;
     filter:
-      drop-shadow(0 0 18px var(--red-glow))
-      drop-shadow(0 0 36px rgba(237,28,36,0.35));
+      drop-shadow(0 0 22px var(--red-glow))
+      drop-shadow(0 0 44px rgba(237,28,36,0.4))
+      drop-shadow(0 0 80px rgba(237,28,36,0.18));
   }
   .header-title {
-    display: flex; flex-direction: column; gap: 10px; min-width: 0; flex: 1;
+    display: flex; flex-direction: column; gap: 14px; min-width: 0; flex: 1;
   }
+  /* VHS chromatic aberration on the wordmark — red ghost left, cyan ghost right */
   .tf-wordmark {
-    height: clamp(58px, 9vw, 96px); max-width: 100%;
+    height: clamp(96px, 16vw, 200px); max-width: 100%;
     object-fit: contain; object-position: left center;
     filter:
-      drop-shadow(0 0 14px var(--red-glow))
-      drop-shadow(0 0 30px rgba(237,28,36,0.45))
-      drop-shadow(0 0 60px rgba(184,41,255,0.3));
+      drop-shadow(-3px 0 0 rgba(237,28,36,0.85))
+      drop-shadow(3px 0 0 rgba(0,220,255,0.7))
+      drop-shadow(0 0 22px var(--red-glow))
+      drop-shadow(0 0 50px rgba(184,41,255,0.4));
+    animation: vhs-jitter 6s steps(2) infinite;
+  }
+  @keyframes vhs-jitter {
+    0%, 92%, 100% { filter:
+      drop-shadow(-3px 0 0 rgba(237,28,36,0.85))
+      drop-shadow(3px 0 0 rgba(0,220,255,0.7))
+      drop-shadow(0 0 22px var(--red-glow))
+      drop-shadow(0 0 50px rgba(184,41,255,0.4)); }
+    94% { filter:
+      drop-shadow(-5px 0 0 rgba(237,28,36,0.95))
+      drop-shadow(5px 0 0 rgba(0,220,255,0.85))
+      drop-shadow(0 0 22px var(--red-glow)); }
+    96% { filter:
+      drop-shadow(2px 0 0 rgba(237,28,36,0.85))
+      drop-shadow(-2px 0 0 rgba(0,220,255,0.7))
+      drop-shadow(0 0 22px var(--red-glow)); }
+  }
+  /* Chrome-gradient micro-copy */
+  .chrome-row {
+    display: flex; gap: 18px; align-items: center;
+    font-family: 'Orbitron', sans-serif; font-size: 0.7rem;
+    font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+  }
+  .chrome-text {
+    background: linear-gradient(180deg,
+      #fff 0%, #cfd2e0 35%, #6a6e85 50%, #cfd2e0 65%, #fff 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.6));
+  }
+  .chrome-pipe {
+    color: var(--red); text-shadow: 0 0 8px var(--red-glow);
+  }
+  .chrome-purple {
+    background: linear-gradient(180deg,
+      #f3d6ff 0%, var(--purple) 50%, #f3d6ff 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ── SYNTHWAVE HORIZON (outrun) ── */
+  .horizon {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    overflow: hidden; pointer-events: none;
+    z-index: 1;
+  }
+  /* Glowing neon horizon line */
+  .horizon::before {
+    content: ''; position: absolute;
+    left: 0; right: 0; top: 0; height: 2px;
+    background: linear-gradient(90deg,
+      transparent 0%, var(--red) 20%, #fff 50%, var(--purple) 80%, transparent 100%);
+    box-shadow:
+      0 0 10px var(--red),
+      0 0 22px var(--red-glow),
+      0 0 38px var(--purple-glow);
+  }
+  /* Perspective grid receding below horizon */
+  .horizon-grid {
+    position: absolute; left: 50%; top: 2px;
+    width: 240%; height: 100%; transform: translateX(-50%);
+    background-image:
+      linear-gradient(180deg,
+        transparent 0%,
+        rgba(184,41,255,0.5) 30%,
+        rgba(184,41,255,0.25) 80%,
+        transparent 100%),
+      repeating-linear-gradient(
+        90deg, transparent 0, transparent 80px,
+        rgba(237,28,36,0.5) 80px, rgba(237,28,36,0.5) 81px),
+      repeating-linear-gradient(
+        0deg, transparent 0, transparent 14px,
+        rgba(184,41,255,0.55) 14px, rgba(184,41,255,0.55) 15px);
+    background-blend-mode: multiply;
+    transform-origin: 50% 0%;
+    transform: translateX(-50%) perspective(140px) rotateX(58deg);
+    mask-image: linear-gradient(180deg, #000 30%, transparent 100%);
   }
   .header-sub {
     color: var(--steel); font-size: 0.78rem;
@@ -120,6 +198,24 @@
     color: var(--purple); margin: 0 10px;
     text-shadow: 0 0 8px var(--purple-glow);
   }
+
+  /* ── PIXELATED DIVIDER STRIPS ── */
+  .scanstrip {
+    height: 6px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        var(--red) 0px, var(--red) 8px,
+        transparent 8px, transparent 12px,
+        var(--purple) 12px, var(--purple) 20px,
+        transparent 20px, transparent 24px
+      );
+    opacity: 0.55;
+    box-shadow:
+      0 0 8px rgba(237,28,36,0.4),
+      0 0 14px rgba(184,41,255,0.3);
+  }
+  .scanstrip.tall { height: 8px; opacity: 0.7; }
 
   /* ── STATS BAR ── */
   .stats {
@@ -360,11 +456,23 @@
   <div class="header-inner">
     <img class="tf-symbol" src="assets/autobot_symbol.png" alt="Autobots">
     <div class="header-title">
+      <div class="chrome-row">
+        <span class="chrome-text">EST · 1984</span>
+        <span class="chrome-pipe">//</span>
+        <span class="chrome-purple">TF · ARCHIVE · SYS</span>
+        <span class="chrome-pipe">//</span>
+        <span class="chrome-text">REC · 2026-05-25</span>
+      </div>
       <img class="tf-wordmark" src="assets/transformers_logo.png" alt="Transformers">
-      <div class="header-sub">Collection<span class="dot">·</span>Updated 2026-05-25<span class="dot">·</span>238/238 figures</div>
+      <div class="header-sub">Collection<span class="dot">·</span>238/238 figures<span class="dot">·</span>More than meets the eye</div>
     </div>
   </div>
+  <div class="horizon">
+    <div class="horizon-grid"></div>
+  </div>
 </header>
+
+<div class="scanstrip tall"></div>
 
 <div class="stats">
   <div class="stat"><div class="stat-num">238</div><div class="stat-lbl">Total</div></div>
@@ -374,6 +482,8 @@
   <div class="stat"><div class="stat-num">0</div><div class="stat-lbl">Ordered</div></div>
   <div class="stat"><div class="stat-num">24</div><div class="stat-lbl">Wreckers</div></div>
 </div>
+
+<div class="scanstrip"></div>
 
 <div class="controls">
   <div class="search-wrap">
