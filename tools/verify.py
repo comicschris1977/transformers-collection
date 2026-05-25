@@ -79,7 +79,7 @@ LINE_HINTS = {
     # Other animated continuities
     "Cyberverse":           ["Cyberverse"],
     # Beast Hunters was a wave of Transformers Prime (2013)
-    "Beast Hunters":        ["Prime", "Beast Hunters"],
+    "Beast Hunters":        ["Beast Hunters"],
     "RiD":                  ["Robots in Disguise"],
     # "Devastation" likely Combiner Wars Devastator OR Studio Series Devastation
     "Devastation":          ["Devastation", "Combiner Wars", "Studio Series"],

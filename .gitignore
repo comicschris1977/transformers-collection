@@ -3,3 +3,6 @@ collection_raw.csv
 sheets_token.json
 *.pyc
 __pycache__/
+
+# Smart-fetch backups (originals of replaced images)
+docs/images/.backup/
