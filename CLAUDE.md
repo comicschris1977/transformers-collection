@@ -174,7 +174,10 @@ TFWiki boxart filename patterns:
 If no boxart exists, fall back in this order:
 - `TFU <Name>.jpg` — Transformers Universe encyclopedia character art (very
   boxart-like, painted illustration)
-- The character's TFWiki page infobox image (first File: in the wikitext)
+- `<Name>G1-catalog.jpg` — Hasbro catalog scan (boxart-style illustration)
+- **The character's TFWiki page infobox image** (first File: in the wikitext
+  above any section header — the top-right image on the page). This is the
+  user-preferred fallback when no other boxart-style art exists.
 - Otherwise: leave existing image and ask the user for a URL
 
 **Modern toy lines (Legacy, SS, SS86, AotP, WFC, PotP, Titans Return) →
