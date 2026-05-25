@@ -82,12 +82,16 @@ When the user asks about a character's lore, alt modes, release dates, pricing, 
   are a good fallback when TFWiki/Pulse lack a clean shot)
 - **actionfigure411.com** — visual guides indexed by line, useful when TFWiki is
   missing a modern figure's photo
+- **transformers.fandom.com** — The Fandom "Transformers Wiki" (different from
+  tfwiki.net). Often has clean character art and a different (sometimes
+  better-curated) image library than TFWiki. Especially handy when TFWiki's
+  G1 boxart/infobox image is sparse.
 - **hero.fandom.com** — Fandom "Heroes Wiki" character pages often have clean
-  G1 character art for Wait-for figures TFWiki is missing.
+  G1 character art for Wait-for figures the other sources are missing.
 - **villains.fandom.com** — Sister site to Hero Wiki, covers villains (Decepticons).
   Use this for Wait-for figures who are villains (Nemesis Prime, Shrapnel,
   Reflector, Bombshell, etc.) since they're absent from Hero Wiki.
-- Both Fandom wikis: their CDN serves WebP via content negotiation even when
+- All Fandom wikis: their CDN serves WebP via content negotiation even when
   the URL ends in .jpg/.png — scripts must handle webp→jpg conversion.
   Also: their pages often include a `QuestionMark.png` placeholder or
   `Twofacesmall.jpg` template image — filter these out when picking the
