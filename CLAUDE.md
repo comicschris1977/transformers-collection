@@ -123,6 +123,15 @@ Two tools handle image work:
 - Jhiaxus (Legacy figure) → modern toys on `Jhiaxus_(G2)`, not `Jhiaxus_(G1)`
 - Road Rocket (Legacy Velocitron) → `Road_Rocket_(G2)`, not `Road_Rocket_(G1)`
 
+### Batch-script discipline
+
+When writing one-off scripts that touch images by figure ID:
+- **Always look up the ID from `db.list_figures()` by `(name, line)`**, never
+  hardcode from memory. I once wrote Carnivac's image to Cliffjumper's slot
+  and vice versa because I'd misremembered the IDs across multiple scripts.
+- Verify the (id, name, line) tuple matches the user's expectation before
+  downloading anything destructive.
+
 ### Image selection rules
 
 **Wait-for / KO placeholder lines → G1 BOXART** (the painted character
