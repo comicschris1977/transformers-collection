@@ -2,6 +2,22 @@
 
 You are a Transformers toy collection assistant. Help the user manage their collection, answer questions about figures, and look up character/toy information.
 
+## User Preferences (locked in)
+
+- **G1 always** — TFWiki links and character art default to the G1 version of the
+  character. Even when a figure is from a movie/Animated/Cyberverse continuity, the
+  user prefers the G1 character page (e.g. `Topspin_(G1)`, not `Topspin` disambig).
+  The site's `tfwikiUrl()` helper enforces this with an overrides map for Primes
+  and crossovers.
+- **Modern collector, no Bayverse** — focus is on modern Hasbro Generations lines
+  (SS, SS86, Legacy, WFC, AotP, PotP, Titans Return, Combiner Wars, etc.) and on
+  G1-themed figures across them. The user is not a fan of the Michael Bay movies.
+- **Favourite character is Optimus Prime.** Multiple OP variants in the collection
+  is intentional, not a duplicate to dedupe.
+- **"OP" = Optimus Prime** in any user shorthand.
+- **"RID" / "RiD" = Robots in Disguise (2015 reboot)** unless context says
+  otherwise (the 2001 RID is rare in this collection).
+
 ## Collection Database
 
 All collection data lives in `collection.db` (SQLite). Use the CLI tool to interact with it:
@@ -58,9 +74,66 @@ $PYTHON tools/collection.py <subcommand>
 ## Character & Toy Info
 
 When the user asks about a character's lore, alt modes, release dates, pricing, or toy line details — search the web. Good sources:
-- **TFWiki** (tfwiki.net) — character lore and toy history
-- **TFW2005** (tfw2005.com) — news, preorders, release info
-- **BBTS / Amazon / Pulse** — current pricing and availability
+- **TFWiki** (tfwiki.net) — character lore and toy history. Best primary source.
+- **Hasbro Pulse** (hasbropulse.com) — official Hasbro storefront, great for
+  recent / preorder / Pulse-exclusive figures (AotP, Legacy United, Wreckers
+  boxsets). Only carries current/recent stock.
+- **TFW2005** (tfw2005.com) — news, preorders, reviewer photos (forum attachments
+  are a good fallback when TFWiki/Pulse lack a clean shot)
+- **actionfigure411.com** — visual guides indexed by line, useful when TFWiki is
+  missing a modern figure's photo
+- **BBTS / Amazon** — current pricing and availability
+
+## Image Fetching
+
+Two tools handle image work:
+
+- **`tools/smart_fetch.py`** — bulk re-fetch with TFWiki-first scoring (handles
+  `/Generations toys` sub-pages, line section matching, file-prefix scoring).
+  Supports `--apply`, `--restore <id>`, single-figure probe via `NAME LINE`,
+  and backups under `docs/images/.backup/`.
+- **`tools/verify.py`** — flags possible (character, line) mislabels by checking
+  each figure against TFWiki. Use after a sync to catch wrong line tags
+  (e.g. Blot Combiner Wars → actually Power of the Primes).
+
+### Image source priority
+
+1. **Placeholder lines** (`Wait for *`, `KO`, `G1 KO`) → G1 character art
+   (boxart-style files starting with the character name)
+2. **Standard lines** → TFWiki `<Character>_(G1)` page's matching section:
+   - Modern sublines often live on `<Character>_(G1)/Generations toys` sub-page
+   - Some characters split toys across pages — combine
+3. **af411** for modern lines TFWiki hasn't documented yet
+4. **Hasbro Pulse / TFW2005 / direct URL from user** for everything else
+
+### Page-name gotchas to remember
+
+- The Thirteen Primes (Liege Maximo, Quintus, Solus, Onyx, Micronus) — no
+  `_(G1)` page, use bare name
+- Alchemist Prime → `Maccadam`
+- Prima Prime → `Prima`
+- Megatronus Prime → `The_Fallen_(G1)`
+- Vector Prime → `_(Cybertron)`
+- Motor Master (Animated) → `The_Motor_Master` (not `Motormaster_(Animated)`)
+- Quintesson Judge → `Quintesson_Judge_(G1)` (not `Quintesson`)
+- Transformers One Optimus → `Orion_Pax_(Transformers_One)` (he's pre-Optimus
+  in that movie)
+
+### Useful filename patterns
+
+| Line | Typical filename prefix |
+|---|---|
+| Studio Series / SS86 | `TF-Studio-Series-*`, `TF-SS86-*`, `SS-toy *` |
+| Legacy | `TF-Legacy-*`, `LegacyEvolutiontoy-*`, `LegacyUnitedtoy-*` |
+| Age of the Primes | `AOTP-*`, `AOTP *`, `TF-AOTP-*` |
+| Power of the Primes | `TF-POTP-*`, `POTP-Titan-*` |
+| WFC Siege / Earthrise / Kingdom | `TF-WFC-S-*`, `TF-WFC-E-*`, `WFC-Kingdom *` |
+| Titans Return | `TF-Generations-Titans-Return-*`, `TitansReturntoy-*` |
+| Retro / Vintage G1 | `RetroG1*`, `VG1-toy *`, `TF-Generations-Retro-Headmasters-*` |
+| Collaborative | `Transformers-Collaborative-*`, `Collaborative-*` |
+
+Cartoon screencaps look like `HM7 Hardhead learns to transform.jpg` — these
+are NOT toy photos. Avoid descriptive multi-word filenames.
 
 ## Toy Line Abbreviations
 
@@ -77,9 +150,13 @@ When the user asks about a character's lore, alt modes, release dates, pricing, 
 | Thrilling 30 | Generations Thrilling 30 |
 | Retro | Walmart Retro / Retro reissues |
 | Crossover | Transformers Crossovers (mashups) |
-| Wreck N Rule | Wreckers-themed subline |
-| Core | Core-class figures |
-| KO | Knock-Off (third-party/unofficial) |
+| Wreck N Rule | Wreckers-themed subline (often the 2024 Hasbro Pulse AotP-era Wreckers boxset) |
+| Core | Core class (a *class size*, not a line — appears across Studio Series, Legacy, etc.) |
+| KO | Knock-Off (third-party/unofficial) — treat like `Wait for *`: use G1 character art |
+| Wait for * | User wants a better release of this character. Use G1 character art as placeholder. |
+| Hotwheels | Hot Wheels x Transformers Collaborative crossover |
+| Transformers One | 2024 movie sub-line |
+| RID / RiD | Robots in Disguise (2015 reboot by default) |
 
 ## Syncing Data from Google Sheet
 
