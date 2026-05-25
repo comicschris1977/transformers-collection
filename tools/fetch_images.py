@@ -139,14 +139,53 @@ def _score_infobox(filename: str) -> int:
     return score
 
 
+def _first_image_in_wikitext(page: str):
+    """
+    Return the very first [[File:X]] reference in a page's lead section
+    (the infobox image — appears at the top of the page above all sections).
+    This is the canonical "TFWiki picked this as the character's image" pick.
+    """
+    try:
+        d = api_call({"action": "parse", "page": page, "prop": "wikitext", "section": "0"})
+        if "error" in d:
+            return None
+        wt = d.get("parse", {}).get("wikitext", {}).get("*", "")
+        m = re.search(r"\[\[(?:File|Image):([^\|\]]+\.(?:jpg|jpeg|png))",
+                      wt, re.IGNORECASE)
+        return m.group(1) if m else None
+    except Exception:
+        return None
+
+
 def get_infobox_image(char_name: str):
     """
     Return (url, filename, page) of the best character-art image from the
-    TFWiki main page.  Tries {Name} then {Name}_(G1).
-    Returns (None, None, None) on failure.
+    TFWiki main page.
+
+    Strategy:
+      1. Try the actual infobox image (first File: ref in page's lead section)
+         on Name_(G1), then Name. This is the canonical TFWiki pick.
+      2. Fall back to scoring all images on the page (older behavior) if the
+         infobox image isn't suitable.
     """
     clean = clean_name(char_name).replace(" ", "_")
-    for page in [clean, clean + "_(G1)"]:
+
+    # Pass 1: real infobox image (preferred). G1 page first since user prefers G1.
+    for page in [clean + "_(G1)", clean]:
+        fname = _first_image_in_wikitext(page)
+        time.sleep(0.3)
+        if not fname:
+            continue
+        # Skip if it's clearly not character art (uses same SKIP_INFOBOX list)
+        if _score_infobox(fname) < 0:
+            continue
+        url = get_image_url(fname)
+        time.sleep(0.3)
+        if url:
+            return url, fname, page
+
+    # Pass 2: scored search across all page images
+    for page in [clean + "_(G1)", clean]:
         try:
             d = api_call({"action": "parse", "page": page, "prop": "images"})
             if "error" in d:
