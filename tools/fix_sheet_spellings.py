@@ -31,7 +31,9 @@ NAME_CORRECTIONS = {
 
 LINE_CORRECTIONS = {
     # wrong : correct  (LINE column)
-    "Wait for  AotP": "Wait for AotP",   # double space
+    "Wait for  AotP":      "Wait for AotP",       # double space
+    "SS Bumblee Movie":    "SS Bumblebee Movie",  # was Bumblee (missing b+e)
+    "SS Bumbleebee Movie": "SS Bumblebee Movie",  # earlier typo (extra e)
 }
 
 def get_credentials():
