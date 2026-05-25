@@ -118,6 +118,23 @@ Two tools handle image work:
 - Quintesson Judge → `Quintesson_Judge_(G1)` (not `Quintesson`)
 - Transformers One Optimus → `Orion_Pax_(Transformers_One)` (he's pre-Optimus
   in that movie)
+- Minerva → `Minerva_(G1_robot)` (unusual underscore — page name has "(G1 robot)" with the space)
+- Strongarm (Legacy figure of the RID 2015 character) → `Strongarm_(RID)`
+- Jhiaxus (Legacy figure) → modern toys on `Jhiaxus_(G2)`, not `Jhiaxus_(G1)`
+- Road Rocket (Legacy Velocitron) → `Road_Rocket_(G2)`, not `Road_Rocket_(G1)`
+
+### Preferring "white-background" clean toy photos
+
+When picking from a TFWiki section that has multiple files, prefer:
+- `G1-toy_<Name>.jpg`, `G1toy <Name>.jpg`, `<Name>g1toy.jpg` (vintage G1 toy)
+- `TF-Legacy-...`, `TF-AOTP-...`, `TF-Studio-Series-...` (modern Hasbro studio shots)
+- `LegacyEvolutiontoy-...`, `LegacyUnitedtoy-...` (TakaraTomy product shots)
+
+Avoid:
+- `<Name>boxart.jpg`, `*-package.jpg`, `*-card.jpg` (packaging)
+- `<Name>G1.jpg` short names without "toy" (often catalog card art)
+- `PackIn_*` (pack-in figures, packaging shots)
+- Multi-word descriptive filenames like "X learns to transform" (cartoon stills)
 
 ### Useful filename patterns
 
