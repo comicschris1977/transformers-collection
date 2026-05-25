@@ -244,8 +244,8 @@ def build():
     box-shadow: 0 0 0 1px rgba(255,159,67,0.2);
   }}
 
-  /* ── COPY FLAGGED ── */
-  #copy-flagged {{
+  /* ── COPY / CLEAR FLAGGED ── */
+  #copy-flagged, #clear-flagged {{
     padding: 8px 14px; border-radius: 6px;
     border: 1px solid #2a2a3e; background: #12121a;
     color: #444; cursor: pointer;
@@ -255,6 +255,8 @@ def build():
   }}
   #copy-flagged.visible {{ display: block; color: #ff9f43; border-color: #ff9f43; }}
   #copy-flagged:hover {{ background: rgba(255,159,67,0.1); }}
+  #clear-flagged.visible {{ display: block; color: #777; border-color: #444; }}
+  #clear-flagged:hover {{ background: rgba(230,57,70,0.15); color: var(--red); border-color: var(--red); }}
 
   /* ── GRID ── */
   .grid {{
@@ -405,6 +407,7 @@ def build():
   <button class="filter-btn" onclick="setFilter('wrecker',this)">Wreckers</button>
   <button class="filter-btn flag-filter" onclick="setFilter('flagged',this)">&#128681; Flagged <span id="flag-count"></span></button>
   <button id="copy-flagged" onclick="copyFlagged()">Copy List</button>
+  <button id="clear-flagged" onclick="clearFlagged()" title="Remove all flags">Clear Flags</button>
   <span id="result-count"></span>
 </div>
 
@@ -435,8 +438,8 @@ function toggleFlag(id) {{
 function updateFlagUI() {{
   const count = getFlagged().size;
   document.getElementById('flag-count').textContent = count ? `(${{count}})` : '';
-  const copyBtn = document.getElementById('copy-flagged');
-  copyBtn.classList.toggle('visible', count > 0);
+  document.getElementById('copy-flagged').classList.toggle('visible', count > 0);
+  document.getElementById('clear-flagged').classList.toggle('visible', count > 0);
 }}
 
 function copyFlagged() {{
@@ -450,6 +453,20 @@ function copyFlagged() {{
     btn.textContent = 'Copied!';
     setTimeout(() => btn.textContent = 'Copy List', 1500);
   }});
+}}
+
+function clearFlagged() {{
+  const count = getFlagged().size;
+  if (count === 0) return;
+  if (!confirm(`Remove all ${{count}} flag${{count === 1 ? '' : 's'}}? This can't be undone.`)) return;
+  saveFlagged(new Set());
+  // If we're currently filtering on flagged, drop back to All
+  if (activeFilter === 'flagged') {{
+    activeFilter = 'all';
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn').classList.add('active');
+  }}
+  render();
 }}
 
 async function init() {{
