@@ -123,18 +123,42 @@ Two tools handle image work:
 - Jhiaxus (Legacy figure) → modern toys on `Jhiaxus_(G2)`, not `Jhiaxus_(G1)`
 - Road Rocket (Legacy Velocitron) → `Road_Rocket_(G2)`, not `Road_Rocket_(G1)`
 
-### Preferring "white-background" clean toy photos
+### Image selection rules
 
-When picking from a TFWiki section that has multiple files, prefer:
-- `G1-toy_<Name>.jpg`, `G1toy <Name>.jpg`, `<Name>g1toy.jpg` (vintage G1 toy)
-- `TF-Legacy-...`, `TF-AOTP-...`, `TF-Studio-Series-...` (modern Hasbro studio shots)
-- `LegacyEvolutiontoy-...`, `LegacyUnitedtoy-...` (TakaraTomy product shots)
+**Wait-for / KO placeholder lines → G1 BOXART** (the painted character
+illustration from the original 80s toy packaging). User specifically wants
+the iconic Sunbow-era box art, NOT clean white-bg toy photos and NOT comic
+panels.
 
-Avoid:
-- `<Name>boxart.jpg`, `*-package.jpg`, `*-card.jpg` (packaging)
-- `<Name>G1.jpg` short names without "toy" (often catalog card art)
-- `PackIn_*` (pack-in figures, packaging shots)
+TFWiki boxart filename patterns:
+- `<Name>boxart.jpg`, `<Name> boxart.jpg`, `<Name>_boxart.jpg`
+- `G1-<Name>-boxart.jpg`, `G1<Name>boxart.jpg`
+- `<Name>g1.jpg`, `<Name>G1.jpg` (short names — often boxart for characters
+  who don't have explicit boxart files; Bluestreakg1.jpg, SlagG1.jpg,
+  Prowlg1.jpg, Shrapnelg1.jpg are real examples)
+
+If no boxart exists, fall back in this order:
+- `TFU <Name>.jpg` — Transformers Universe encyclopedia character art (very
+  boxart-like, painted illustration)
+- The character's TFWiki page infobox image (first File: in the wikitext)
+- Otherwise: leave existing image and ask the user for a URL
+
+**Modern toy lines (Legacy, SS, SS86, AotP, WFC, PotP, Titans Return) →
+clean white-background PRODUCT PHOTO** of the toy itself, not the toy
+inside its box.
+
+TFWiki product-photo filename patterns:
+- `TF-Legacy-...`, `TF-AOTP-...`, `TF-Studio-Series-...`, `TF-WFC-...`,
+  `TF-POTP-...`, `TF-Generations-Titans-Return-...`
+- `LegacyEvolutiontoy-...`, `LegacyUnitedtoy-...` (TakaraTomy shots)
+- `StudioSeries86toy-...`, `TitansReturntoy-...`, `WFC-Kingdom-toy-...`
+
+Avoid for modern toys:
+- `*-package.jpg`, `*-card.jpg`, `*boxart.jpg`, `*-box.jpg` (in-package)
+- `*-art.jpg`, `*-render.jpg`, `*-concept.jpg`, `*-promo.jpg` (not the
+  actual product)
 - Multi-word descriptive filenames like "X learns to transform" (cartoon stills)
+- Pack-in 2-pack shots when a solo shot of the figure exists
 
 ### Useful filename patterns
 
