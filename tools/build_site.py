@@ -89,18 +89,22 @@ def build():
   @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@600;700;900&display=swap');
 
   :root {{
-    --red:       #ed1c24;  /* Hasbro brand red */
-    --red-deep:  #b00d12;
-    --gold:      #ffd60a;
-    --steel:     #9aa0a8;
-    --dark:      #07070b;
-    --dark-2:    #0d0d14;
-    --card:      #14141d;
-    --card-hi:   #1a1a26;
-    --border:    #22222e;
-    --text:      #e6e8ee;
-    --text-mute: #6a6a82;
-    --glow:      rgba(237,28,36,0.32);
+    --red:        #ed1c24;       /* Autobot / Hasbro brand red */
+    --red-deep:   #b00d12;
+    --red-glow:   rgba(237,28,36,0.55);
+    --purple:     #b829ff;       /* Decepticon neon purple */
+    --purple-deep:#7a17b3;
+    --purple-glow:rgba(184,41,255,0.55);
+    --gold:       #ffd60a;
+    --steel:      #9aa0a8;
+    --dark:       #06060c;
+    --dark-2:     #0c0c14;
+    --card:       #11111c;
+    --card-hi:    #181828;
+    --border:     #22223a;
+    --text:       #e8eaf2;
+    --text-mute:  #6e6e8a;
+    --glow:       var(--red-glow);
   }}
 
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
@@ -111,10 +115,12 @@ def build():
     color: var(--text);
     min-height: 100vh;
     background-image:
-      radial-gradient(ellipse at top, rgba(237,28,36,0.06) 0%, transparent 55%),
-      linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
-    background-size: auto, 48px 48px, 48px 48px;
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(184,41,255,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 50% 100%, rgba(237,28,36,0.06) 0%, transparent 60%),
+      linear-gradient(rgba(184,41,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(184,41,255,0.018) 1px, transparent 1px);
+    background-size: auto, auto, 48px 48px, 48px 48px;
+    background-attachment: fixed, fixed, scroll, scroll;
     -webkit-font-smoothing: antialiased;
   }}
 
@@ -122,46 +128,79 @@ def build():
   header {{
     position: relative;
     overflow: hidden;
-    padding: 28px 40px 24px;
+    padding: 36px 40px 30px;
     background:
-      linear-gradient(180deg, rgba(237,28,36,0.06) 0%, transparent 100%),
-      linear-gradient(135deg, #0a0a10 0%, #14141d 55%, #1d0c0f 100%);
-    border-bottom: 1px solid rgba(237,28,36,0.35);
-    box-shadow: 0 1px 0 rgba(237,28,36,0.5), 0 8px 32px rgba(0,0,0,0.5);
+      radial-gradient(ellipse 70% 100% at 30% 0%, rgba(237,28,36,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 70% 100% at 80% 100%, rgba(184,41,255,0.22) 0%, transparent 60%),
+      linear-gradient(135deg, #08080f 0%, #0e0e1a 55%, #14081f 100%);
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, var(--red) 0%, var(--purple) 100%) 1;
+    box-shadow:
+      0 1px 0 rgba(237,28,36,0.5),
+      0 2px 24px rgba(184,41,255,0.18),
+      0 8px 32px rgba(0,0,0,0.6);
   }}
+  /* Synthwave perspective grid */
   header::before {{
     content: '';
     position: absolute; inset: 0;
-    background: repeating-linear-gradient(
-      -45deg,
-      transparent, transparent 22px,
-      rgba(237,28,36,0.025) 22px, rgba(237,28,36,0.025) 23px
-    );
+    background:
+      repeating-linear-gradient(
+        180deg,
+        transparent 0px, transparent 26px,
+        rgba(184,41,255,0.06) 26px, rgba(184,41,255,0.06) 27px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px, transparent 60px,
+        rgba(237,28,36,0.05) 60px, rgba(237,28,36,0.05) 61px
+      );
     pointer-events: none;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 40%, #000 100%);
+  }}
+  /* Scanlines */
+  header::after {{
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.018) 0px, rgba(255,255,255,0.018) 1px,
+      transparent 1px, transparent 3px
+    );
+    pointer-events: none; mix-blend-mode: overlay;
   }}
   .header-inner {{
-    position: relative; display: flex; align-items: center; gap: 22px;
+    position: relative; display: flex; align-items: center; gap: 28px;
     max-width: 1600px; margin: 0 auto;
   }}
   .tf-symbol {{
-    width: 68px; height: 68px; flex-shrink: 0;
+    width: 84px; height: 84px; flex-shrink: 0;
     object-fit: contain;
-    filter: drop-shadow(0 0 14px var(--glow));
+    filter:
+      drop-shadow(0 0 18px var(--red-glow))
+      drop-shadow(0 0 36px rgba(237,28,36,0.35));
   }}
   .header-title {{
-    display: flex; flex-direction: column; gap: 6px; min-width: 0;
+    display: flex; flex-direction: column; gap: 10px; min-width: 0; flex: 1;
   }}
   .tf-wordmark {{
-    height: 42px; max-width: 100%;
+    height: clamp(58px, 9vw, 96px); max-width: 100%;
     object-fit: contain; object-position: left center;
-    filter: drop-shadow(0 0 18px rgba(237,28,36,0.35));
+    filter:
+      drop-shadow(0 0 14px var(--red-glow))
+      drop-shadow(0 0 30px rgba(237,28,36,0.45))
+      drop-shadow(0 0 60px rgba(184,41,255,0.3));
   }}
   .header-sub {{
     color: var(--steel); font-size: 0.78rem;
     letter-spacing: 3px; text-transform: uppercase;
     font-weight: 600;
+    text-shadow: 0 0 10px rgba(184,41,255,0.4);
   }}
-  .header-sub .dot {{ color: var(--red); margin: 0 8px; }}
+  .header-sub .dot {{
+    color: var(--purple); margin: 0 10px;
+    text-shadow: 0 0 8px var(--purple-glow);
+  }}
 
   /* ── STATS BAR ── */
   .stats {{
@@ -180,15 +219,20 @@ def build():
   .stat:hover {{ background: #15151f; }}
   .stat-num {{
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.85rem; font-weight: 700;
+    font-size: 1.95rem; font-weight: 700;
     color: var(--red);
-    text-shadow: 0 0 14px var(--glow);
+    text-shadow: 0 0 14px var(--red-glow), 0 0 28px rgba(237,28,36,0.4);
     line-height: 1;
+  }}
+  /* Alternate Decepticon-purple stat numbers for wishlist/preorder/wreckers */
+  .stat.purple .stat-num {{
+    color: var(--purple);
+    text-shadow: 0 0 14px var(--purple-glow), 0 0 28px rgba(184,41,255,0.4);
   }}
   .stat-lbl {{
     font-size: 0.68rem; color: var(--text-mute);
-    text-transform: uppercase; letter-spacing: 2px;
-    margin-top: 6px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2.5px;
+    margin-top: 8px; font-weight: 600;
   }}
 
   /* ── CONTROLS ── */
@@ -214,21 +258,27 @@ def build():
     font-family: 'Rajdhani', sans-serif; font-size: 1rem;
     outline: none; transition: border-color 0.2s, box-shadow 0.2s;
   }}
-  #search:focus {{ border-color: var(--red); box-shadow: 0 0 0 3px rgba(230,57,70,0.15); }}
+  #search:focus {{
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(184,41,255,0.18), 0 0 18px rgba(184,41,255,0.3);
+  }}
   #search::placeholder {{ color: #3a3a5a; }}
 
   .filter-btn {{
     padding: 8px 16px; border-radius: 6px;
     border: 1px solid #2a2a3e; background: #12121a;
-    color: #666; cursor: pointer;
-    font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; font-weight: 600;
-    letter-spacing: 0.5px; text-transform: uppercase;
-    transition: all 0.2s;
+    color: #888; cursor: pointer;
+    font-family: 'Rajdhani', sans-serif; font-size: 0.88rem; font-weight: 600;
+    letter-spacing: 0.8px; text-transform: uppercase;
+    transition: all 0.18s;
   }}
-  .filter-btn:hover {{ border-color: var(--red); color: #cdd6f4; }}
+  .filter-btn:hover {{
+    border-color: var(--purple); color: var(--text);
+    box-shadow: 0 0 12px rgba(184,41,255,0.2);
+  }}
   .filter-btn.active {{
     background: var(--red); border-color: var(--red); color: #fff;
-    box-shadow: 0 0 12px var(--glow);
+    box-shadow: 0 0 14px var(--red-glow), 0 0 28px rgba(237,28,36,0.3);
   }}
   .filter-btn.flag-filter {{ border-color: #ff9f43; color: #ff9f43; }}
   .filter-btn.flag-filter.active {{ background: #ff9f43; border-color: #ff9f43; color: #0a0a0f; box-shadow: 0 0 12px rgba(255,159,67,0.4); }}
@@ -291,8 +341,11 @@ def build():
   }}
   .card:hover {{
     transform: translateY(-4px);
-    border-color: rgba(237,28,36,0.55);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.55), 0 0 24px var(--glow);
+    border-color: rgba(184,41,255,0.55);
+    box-shadow:
+      0 12px 32px rgba(0,0,0,0.6),
+      0 0 24px rgba(184,41,255,0.35),
+      0 0 50px rgba(237,28,36,0.12);
   }}
 
   /* image area */
@@ -397,8 +450,8 @@ def build():
 <div class="stats">
   <div class="stat"><div class="stat-num">{stats['total']}</div><div class="stat-lbl">Total</div></div>
   <div class="stat"><div class="stat-num">{stats['owned']}</div><div class="stat-lbl">Owned</div></div>
-  <div class="stat"><div class="stat-num">{stats['want']}</div><div class="stat-lbl">Wishlist</div></div>
-  <div class="stat"><div class="stat-num">{stats['preordered']}</div><div class="stat-lbl">Pre-ordered</div></div>
+  <div class="stat purple"><div class="stat-num">{stats['want']}</div><div class="stat-lbl">Wishlist</div></div>
+  <div class="stat purple"><div class="stat-num">{stats['preordered']}</div><div class="stat-lbl">Pre-ordered</div></div>
   <div class="stat"><div class="stat-num">{stats['ordered']}</div><div class="stat-lbl">Ordered</div></div>
   <div class="stat"><div class="stat-num">{stats['wreckers']}</div><div class="stat-lbl">Wreckers</div></div>
 </div>
