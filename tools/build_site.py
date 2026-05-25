@@ -469,6 +469,41 @@ function clearFlagged() {{
   render();
 }}
 
+// TFWiki page name overrides for characters whose canonical page is NOT
+// "<Name>_(G1)". Default rule: strip *suffix continuity tags, then append
+// _(G1). User preference: always link to the G1 character page when possible.
+const TFWIKI_OVERRIDES = {{
+  // The Thirteen Primes — no _(G1) page; they live at their bare name
+  'Liege Maximo':     'Liege_Maximo',
+  'Quintus Prime':    'Quintus_Prime',
+  'Solus Prime':      'Solus_Prime',
+  'Onyx Prime':       'Onyx_Prime',
+  'Micronus Prime':   'Micronus_Prime',
+  'Prima Prime':      'Prima',
+  'Alchemist Prime':  'Maccadam',
+  'Megatronus Prime': 'The_Fallen_(G1)',
+  // Star Optimus is an AotP variant of OP — link to G1 OP
+  'Star Optimus':     'Optimus_Prime_(G1)',
+  // Vector Prime is a Cybertron-line character
+  'Vector Prime':     'Vector_Prime_(Cybertron)',
+  // Collaborative crossovers — bare name pages
+  'Mandalorian':      'The_Mandalorian',
+  'Ectotron':         'Ectotron',
+  'Agent Knight':     'Agent_Knight',
+  'Bone Shaker':      'Bone_Shaker',
+  // Quintesson Judge (G1) — user labels as "Quintesson *pit of judgement"
+  'Quintesson':       'Quintesson_Judge_(G1)',
+}};
+
+function tfwikiUrl(name) {{
+  // Strip *<continuity> suffix the user uses for movie/animated variants
+  const clean = name.replace(/\\s*\\*.*$/, '').trim();
+  if (TFWIKI_OVERRIDES[clean]) {{
+    return 'https://tfwiki.net/wiki/' + TFWIKI_OVERRIDES[clean];
+  }}
+  return 'https://tfwiki.net/wiki/' + encodeURIComponent(clean.replace(/ /g, '_')) + '_(G1)';
+}}
+
 async function init() {{
   const res = await fetch('data.json');
   figures = await res.json();
@@ -522,7 +557,7 @@ function render() {{
   grid.innerHTML = figs.map(f => {{
     const color   = STATUS_COLOR[f.status] || '#888';
     const label   = STATUS_LABEL[f.status] || f.status;
-    const wikiUrl = 'https://tfwiki.net/wiki/' + encodeURIComponent(f.name.replace(/ /g,'_'));
+    const wikiUrl = tfwikiUrl(f.name);
     const isFlagged = flagged.has(f.id);
     const rankBadge = f.rank != null
       ? `<div class="rank-badge">${{f.rank}}&thinsp;/&thinsp;10</div>` : '';
