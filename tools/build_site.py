@@ -502,6 +502,39 @@ const TFWIKI_OVERRIDES = {{
   // Modern-toy continuities the user has on the sheet
   'Jhiaxus':          'Jhiaxus_(G2)',
   'Road Rocket':      'Road_Rocket_(G2)',
+
+  // ── Bare-name characters (no _(G1) page; TFWiki article is just the name) ──
+  'Amalgamous Prime':    'Amalgamous_Prime',
+  'Battleslash':         'Battleslash',
+  'Dracodon':            'Dracodon',
+  'Gigawatt':            'Gigawatt',
+  'Jalopy':              'Jalopy',
+  'Matrix of Leadership':'Matrix_of_Leadership',
+  'Nexus Prime':         'Nexus_Prime',
+  'Pointblank':          'Pointblank',
+  'Rattrap':             'Rattrap',
+  'Red Heat':            'Red_Heat',
+  'Roadtrap':            'Roadtrap',
+  'Six Shot':            'Six_Shot',
+  'Skullgrin':           'Skullgrin',
+  'Spike':               'Spike',
+  'Sweeps':              'Sweeps',
+  'Trip-Up':             'Trip-Up',
+  'Horri-Bull':          'Horri-Bull',
+
+  // ── Megatronus Prime: prefer the explicit "Megatronus_Prime" article
+  //    (was The_Fallen_(G1) before — that exists but Megatronus_Prime
+  //    is the AotP-focused article)
+  'Megatronus Prime':    'Megatronus_Prime',
+
+  // ── Special user-naming -> canonical G1 character page ──
+  'Ironhide BD':         'Ironhide_(G1)',      // Battle Damage variant of G1 Ironhide
+  'Wheeljack Origins':   'Wheeljack_(G1)',     // Origins is just a deco of G1 Wheeljack
+  'Wild Ride':           'Wildrider_(G1)',     // Hasbro renamed Wildrider to "Wild Ride"
+  'Wreck Gar':           'Wreck-Gar_(G1)',     // canonical spelling has a hyphen
+  'Leadfoot G2':         'Leadfoot_(G2)',      // user labels his G2 variant
+  // Daddy-O comes paired with Trip-Up — TFWiki documents him under Trip-Up's page
+  'Daddy-O':             'Trip-Up',
 }};
 
 function tfwikiUrl(name) {{
@@ -510,11 +543,12 @@ function tfwikiUrl(name) {{
   if (TFWIKI_OVERRIDES[clean]) {{
     return 'https://tfwiki.net/wiki/' + TFWIKI_OVERRIDES[clean];
   }}
-  // Title-case so "BumbleBee" -> "Bumblebee" (TFWiki URLs are case-sensitive
-  // after the first letter; user's camelCase typo would 404)
-  const titled = clean.split(/\\s+/)
-    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-    .join(' ');
+  // Title-case each word AND each hyphen segment so "Daddy-O" stays "Daddy-O"
+  // and "BumbleBee" -> "Bumblebee" (TFWiki is case-sensitive after first letter)
+  const tc = w => w.split('-').map(p =>
+    p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()
+  ).join('-');
+  const titled = clean.split(/\\s+/).map(tc).join(' ');
   return 'https://tfwiki.net/wiki/' + encodeURIComponent(titled.replace(/ /g, '_')) + '_(G1)';
 }}
 
