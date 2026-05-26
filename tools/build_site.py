@@ -10,6 +10,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 import db
 import tfwiki_links
+import fetch_ebay_prices  # reuse LINE_TO_QUERY map for eBay link construction
 
 SITE_DIR = Path(__file__).parent.parent / "docs"
 
@@ -79,6 +80,7 @@ def build():
     status_color_js     = json.dumps(STATUS_COLOR)
     status_label_js     = json.dumps(STATUS_LABEL)
     tfwiki_overrides_js = json.dumps(tfwiki_links.TFWIKI_OVERRIDES, sort_keys=True)
+    ebay_line_map_js    = json.dumps(fetch_ebay_prices.LINE_TO_QUERY, sort_keys=True)
     today               = __import__("datetime").date.today()
     with_images     = len([f for f in figures if f["image_url"] and not f["image_url"].startswith("http")])
 
@@ -524,13 +526,27 @@ def build():
   .card-retailer {{ font-size: 0.72rem; color: #484868; }}
   .card-retailer span {{ color: #585878; }}
   .card-notes {{ font-size: 0.7rem; color: #363650; margin-top: 3px; font-style: italic; line-height: 1.3; }}
-  .card-ebay {{
-    font-size: 0.72rem; color: #5a8a5a; margin-top: 3px;
-    font-family: 'Rajdhani', sans-serif; font-weight: 600;
-    letter-spacing: 0.3px;
+  /* eBay "sold" link button */
+  .ebay-btn {{
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 8px;
+    padding: 5px 10px; border-radius: 4px;
+    background: rgba(255,214,10,0.07);
+    border: 1px solid rgba(255,214,10,0.4);
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.15s;
+    align-self: flex-start;
   }}
-  .card-ebay strong {{ color: var(--gold); font-weight: 700; }}
-  .card-ebay .ebay-n {{ color: #444858; font-weight: 500; }}
+  .ebay-btn:hover {{
+    background: var(--gold);
+    color: #0a0a0f;
+    box-shadow: 0 0 12px rgba(255,214,10,0.5);
+  }}
+  .ebay-btn svg {{ width: 11px; height: 11px; fill: currentColor; }}
 
   /* ── EMPTY STATE ── */
   .no-results {{
@@ -676,6 +692,32 @@ function tfwikiUrl(name) {{
   return 'https://tfwiki.net/wiki/' + encodeURIComponent(titled.replace(/ /g, '_')) + '_(G1)';
 }}
 
+// eBay line-code -> search-friendly expansion (injected from tools/fetch_ebay_prices.py)
+const EBAY_LINE_MAP = {ebay_line_map_js};
+
+// Lines that aren't real products — skip the eBay button on these
+const EBAY_SKIP_PREFIX = ['wait', 'ko', 'g1 ko'];
+
+function ebayUrl(name, line) {{
+  // Strip *<continuity> suffix from the user's name
+  const cleanName = name.replace(/\\s*\\*.*$/, '').trim();
+  const expanded = (line && EBAY_LINE_MAP[line]) ? EBAY_LINE_MAP[line] : (line || '');
+  const q = expanded ? `Transformers ${{expanded}} ${{cleanName}}` : `Transformers ${{cleanName}}`;
+  const params = new URLSearchParams({{
+    _nkw: q,
+    LH_Sold: '1',
+    LH_Complete: '1',
+    _sop: '13',
+  }});
+  return 'https://www.ebay.com/sch/i.html?' + params.toString();
+}}
+
+function shouldShowEbay(line) {{
+  if (!line) return true;
+  const lc = line.toLowerCase();
+  return !EBAY_SKIP_PREFIX.some(p => lc.startsWith(p));
+}}
+
 async function init() {{
   const res = await fetch('data.json');
   figures = await res.json();
@@ -736,15 +778,15 @@ function render() {{
     const wrecker  = f.is_wrecker
       ? `<span class="badge badge-wrecker" title="Wrecker"><img src="assets/wreckers_logo.png" alt="Wrecker"></span>` : '';
     const combiner = f.combiner   ? `<span class="badge badge-combiner">${{f.combiner}}</span>` : '';
-    const ebayLine = (f.ebay_avg != null && f.ebay_n > 0)
-      ? `<div class="card-ebay" title="eBay 90d sold avg (updated ${{f.ebay_when}})">eBay avg: <strong>$${{Number(f.ebay_avg).toFixed(2)}}</strong> <span class="ebay-n">(${{f.ebay_n}} sold)</span></div>`
+    const ebayBtn = shouldShowEbay(f.line)
+      ? `<a class="ebay-btn" href="${{ebayUrl(f.name, f.line)}}" target="_blank" rel="noopener" title="View this figure's recent eBay sold listings"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z"/></svg>eBay sold</a>`
       : '';
-    const hasFooter = f.retailer || f.notes || ebayLine;
+    const hasFooter = f.retailer || f.notes || ebayBtn;
     const footer = hasFooter ? `
     <div class="card-footer">
       ${{f.retailer ? `<div class="card-retailer">From <span>${{f.retailer}}</span></div>` : ''}}
       ${{f.notes    ? `<div class="card-notes">${{f.notes}}</div>` : ''}}
-      ${{ebayLine}}
+      ${{ebayBtn}}
     </div>` : '';
 
     return `
