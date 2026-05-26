@@ -528,25 +528,25 @@ def build():
   .card-notes {{ font-size: 0.7rem; color: #363650; margin-top: 3px; font-style: italic; line-height: 1.3; }}
   /* eBay "sold" link button */
   .ebay-btn {{
-    display: inline-flex; align-items: center; gap: 5px;
-    margin-top: 8px;
-    padding: 5px 10px; border-radius: 4px;
-    background: rgba(255,214,10,0.07);
-    border: 1px solid rgba(255,214,10,0.4);
-    color: var(--gold);
+    display: flex !important; align-items: center; justify-content: center;
+    gap: 6px; margin-top: 8px; width: 100%;
+    padding: 7px 10px; border-radius: 4px;
+    background: rgba(255,214,10,0.08);
+    border: 1px solid rgba(255,214,10,0.45);
+    color: var(--gold) !important;
     font-family: 'Rajdhani', sans-serif;
-    font-size: 0.7rem; font-weight: 700;
-    letter-spacing: 1px; text-transform: uppercase;
-    text-decoration: none;
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    text-decoration: none !important;
     transition: all 0.15s;
-    align-self: flex-start;
+    cursor: pointer; box-sizing: border-box;
   }}
   .ebay-btn:hover {{
     background: var(--gold);
-    color: #0a0a0f;
-    box-shadow: 0 0 12px rgba(255,214,10,0.5);
+    color: #0a0a0f !important;
+    box-shadow: 0 0 14px rgba(255,214,10,0.55);
   }}
-  .ebay-btn svg {{ width: 11px; height: 11px; fill: currentColor; }}
+  .ebay-btn svg {{ width: 12px; height: 12px; fill: currentColor; flex-shrink: 0; }}
 
   /* ── EMPTY STATE ── */
   .no-results {{
@@ -719,7 +719,9 @@ function shouldShowEbay(line) {{
 }}
 
 async function init() {{
-  const res = await fetch('data.json');
+  // Cache-buster: appended to data.json fetch so browsers always pull fresh
+  // after a rebuild rather than serving stale cards.
+  const res = await fetch('data.json?v={today}');
   figures = await res.json();
   render();
 }}
