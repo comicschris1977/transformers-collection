@@ -33,6 +33,9 @@ CREATE TABLE IF NOT EXISTS figures (
 
 MIGRATE_SQL = [
     "ALTER TABLE figures ADD COLUMN image_url TEXT",
+    "ALTER TABLE figures ADD COLUMN ebay_avg_price REAL",
+    "ALTER TABLE figures ADD COLUMN ebay_sold_count INTEGER",
+    "ALTER TABLE figures ADD COLUMN ebay_updated_at TEXT",
 ]
 
 

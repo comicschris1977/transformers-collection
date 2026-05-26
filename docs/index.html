@@ -440,6 +440,13 @@
   .card-retailer { font-size: 0.72rem; color: #484868; }
   .card-retailer span { color: #585878; }
   .card-notes { font-size: 0.7rem; color: #363650; margin-top: 3px; font-style: italic; line-height: 1.3; }
+  .card-ebay {
+    font-size: 0.72rem; color: #5a8a5a; margin-top: 3px;
+    font-family: 'Rajdhani', sans-serif; font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .card-ebay strong { color: var(--gold); font-weight: 700; }
+  .card-ebay .ebay-n { color: #444858; font-weight: 500; }
 
   /* ── EMPTY STATE ── */
   .no-results {
@@ -645,11 +652,15 @@ function render() {
     const wrecker  = f.is_wrecker
       ? `<span class="badge badge-wrecker" title="Wrecker"><img src="assets/wreckers_logo.png" alt="Wrecker"></span>` : '';
     const combiner = f.combiner   ? `<span class="badge badge-combiner">${f.combiner}</span>` : '';
-    const hasFooter = f.retailer || f.notes;
+    const ebayLine = (f.ebay_avg != null && f.ebay_n > 0)
+      ? `<div class="card-ebay" title="eBay 90d sold avg (updated ${f.ebay_when})">eBay avg: <strong>$${Number(f.ebay_avg).toFixed(2)}</strong> <span class="ebay-n">(${f.ebay_n} sold)</span></div>`
+      : '';
+    const hasFooter = f.retailer || f.notes || ebayLine;
     const footer = hasFooter ? `
     <div class="card-footer">
       ${f.retailer ? `<div class="card-retailer">From <span>${f.retailer}</span></div>` : ''}
       ${f.notes    ? `<div class="card-notes">${f.notes}</div>` : ''}
+      ${ebayLine}
     </div>` : '';
 
     return `
