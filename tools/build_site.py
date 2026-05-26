@@ -526,8 +526,9 @@ def build():
   .card-retailer {{ font-size: 0.72rem; color: #484868; }}
   .card-retailer span {{ color: #585878; }}
   .card-notes {{ font-size: 0.7rem; color: #363650; margin-top: 3px; font-style: italic; line-height: 1.3; }}
-  /* eBay "sold" link button */
-  .ebay-btn {{
+  /* "Sold" market-price link button (named neutrally so ad-blockers
+     don't hide it as an "ebay-*" affiliate element) */
+  .market-btn {{
     display: flex !important; align-items: center; justify-content: center;
     gap: 6px; margin-top: 8px; width: 100%;
     padding: 7px 10px; border-radius: 4px;
@@ -541,12 +542,12 @@ def build():
     transition: all 0.15s;
     cursor: pointer; box-sizing: border-box;
   }}
-  .ebay-btn:hover {{
+  .market-btn:hover {{
     background: var(--gold);
     color: #0a0a0f !important;
     box-shadow: 0 0 14px rgba(255,214,10,0.55);
   }}
-  .ebay-btn svg {{ width: 12px; height: 12px; fill: currentColor; flex-shrink: 0; }}
+  .market-btn svg {{ width: 12px; height: 12px; fill: currentColor; flex-shrink: 0; }}
 
   /* ── EMPTY STATE ── */
   .no-results {{
@@ -692,16 +693,15 @@ function tfwikiUrl(name) {{
   return 'https://tfwiki.net/wiki/' + encodeURIComponent(titled.replace(/ /g, '_')) + '_(G1)';
 }}
 
-// eBay line-code -> search-friendly expansion (injected from tools/fetch_ebay_prices.py)
-const EBAY_LINE_MAP = {ebay_line_map_js};
+// Line-code -> search-friendly expansion (injected from tools/fetch_ebay_prices.py).
+// Variable names avoid the "ebay" token because some ad-blockers / privacy
+// extensions auto-hide elements whose class or id contains it.
+const MARKET_LINE_MAP = {ebay_line_map_js};
+const MARKET_SKIP_PREFIX = ['wait', 'ko', 'g1 ko'];
 
-// Lines that aren't real products — skip the eBay button on these
-const EBAY_SKIP_PREFIX = ['wait', 'ko', 'g1 ko'];
-
-function ebayUrl(name, line) {{
-  // Strip *<continuity> suffix from the user's name
+function soldListingsUrl(name, line) {{
   const cleanName = name.replace(/\\s*\\*.*$/, '').trim();
-  const expanded = (line && EBAY_LINE_MAP[line]) ? EBAY_LINE_MAP[line] : (line || '');
+  const expanded = (line && MARKET_LINE_MAP[line]) ? MARKET_LINE_MAP[line] : (line || '');
   const q = expanded ? `Transformers ${{expanded}} ${{cleanName}}` : `Transformers ${{cleanName}}`;
   const params = new URLSearchParams({{
     _nkw: q,
@@ -712,10 +712,10 @@ function ebayUrl(name, line) {{
   return 'https://www.ebay.com/sch/i.html?' + params.toString();
 }}
 
-function shouldShowEbay(line) {{
+function showMarketBtn(line) {{
   if (!line) return true;
   const lc = line.toLowerCase();
-  return !EBAY_SKIP_PREFIX.some(p => lc.startsWith(p));
+  return !MARKET_SKIP_PREFIX.some(p => lc.startsWith(p));
 }}
 
 async function init() {{
@@ -780,15 +780,15 @@ function render() {{
     const wrecker  = f.is_wrecker
       ? `<span class="badge badge-wrecker" title="Wrecker"><img src="assets/wreckers_logo.png" alt="Wrecker"></span>` : '';
     const combiner = f.combiner   ? `<span class="badge badge-combiner">${{f.combiner}}</span>` : '';
-    const ebayBtn = shouldShowEbay(f.line)
-      ? `<a class="ebay-btn" href="${{ebayUrl(f.name, f.line)}}" target="_blank" rel="noopener" title="View this figure's recent eBay sold listings"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4-4 1.41-1.41L10 13.67l6.59-6.59L18 8.5l-8 8z"/></svg>eBay sold</a>`
+    const marketBtn = showMarketBtn(f.line)
+      ? `<a class="market-btn" href="${{soldListingsUrl(f.name, f.line)}}" target="_blank" rel="noopener" title="View this figure's recent sold listings"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM7.16 14.78l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.86-7.01-1.73-.96-3.87 7H8.53L4.27 2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.26-.22z"/></svg>View sold listings</a>`
       : '';
-    const hasFooter = f.retailer || f.notes || ebayBtn;
+    const hasFooter = f.retailer || f.notes || marketBtn;
     const footer = hasFooter ? `
     <div class="card-footer">
       ${{f.retailer ? `<div class="card-retailer">From <span>${{f.retailer}}</span></div>` : ''}}
       ${{f.notes    ? `<div class="card-notes">${{f.notes}}</div>` : ''}}
-      ${{ebayBtn}}
+      ${{marketBtn}}
     </div>` : '';
 
     return `
