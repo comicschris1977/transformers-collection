@@ -70,6 +70,7 @@ TFWIKI_OVERRIDES = {
     "Sweeps":               "Sweeps",
     "Trip-Up":              "Trip-Up",
     "Horri-Bull":           "Horri-Bull",
+    "Greenlight":           "Greenlight",
 
     # ── 2-pack partners documented on the partner's page ──
     "Daddy-O":              "Trip-Up",
