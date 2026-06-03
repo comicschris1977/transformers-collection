@@ -486,10 +486,10 @@
         <span class="chrome-pipe">//</span>
         <span class="chrome-purple">TF · ARCHIVE · SYS</span>
         <span class="chrome-pipe">//</span>
-        <span class="chrome-text">REC · 2026-06-02</span>
+        <span class="chrome-text">REC · 2026-06-03</span>
       </div>
       <img class="tf-wordmark" src="assets/transformers_logo.png" alt="Transformers">
-      <div class="header-sub">Collection<span class="dot">·</span>242/242 figures<span class="dot">·</span>More than meets the eye</div>
+      <div class="header-sub">Collection<span class="dot">·</span>251/251 figures<span class="dot">·</span>More than meets the eye</div>
     </div>
   </div>
   <div class="horizon">
@@ -500,9 +500,9 @@
 <div class="scanstrip tall"></div>
 
 <div class="stats">
-  <div class="stat"><div class="stat-num">242</div><div class="stat-lbl">Total</div></div>
-  <div class="stat"><div class="stat-num">205</div><div class="stat-lbl">Owned</div></div>
-  <div class="stat purple"><div class="stat-num">31</div><div class="stat-lbl">Wishlist</div></div>
+  <div class="stat"><div class="stat-num">251</div><div class="stat-lbl">Total</div></div>
+  <div class="stat"><div class="stat-num">208</div><div class="stat-lbl">Owned</div></div>
+  <div class="stat purple"><div class="stat-num">37</div><div class="stat-lbl">Wishlist</div></div>
   <div class="stat purple"><div class="stat-num">6</div><div class="stat-lbl">Pre-ordered</div></div>
   <div class="stat"><div class="stat-num">0</div><div class="stat-lbl">Ordered</div></div>
   <div class="stat"><div class="stat-num">24</div><div class="stat-lbl">Wreckers</div></div>
@@ -590,7 +590,7 @@ function clearFlagged() {
 // TFWiki page-name overrides for characters whose canonical page is NOT
 // "<Name>_(G1)". Injected from tools/tfwiki_links.py — single source of truth.
 // To add a new override: edit tools/tfwiki_links.py and rebuild.
-const TFWIKI_OVERRIDES = {"Agent Knight": "Agent_Knight", "Alchemist Prime": "Maccadam", "Amalgamous Prime": "Amalgamous_Prime", "Battleslash": "Battleslash", "Bone Shaker": "Bone_Shaker", "Daddy-O": "Trip-Up", "Dracodon": "Dracodon", "Ectotron": "Ectotron", "Gigawatt": "Gigawatt", "Greenlight": "Greenlight", "Horri-Bull": "Horri-Bull", "Hun-Grrr": "Hun-Gurrr_(G1)", "Ironhide BD": "Ironhide_(G1)", "Jalopy": "Jalopy", "Jhiaxus": "Jhiaxus_(G2)", "Leadfoot G2": "Leadfoot_(G2)", "Liege Maximo": "Liege_Maximo", "Mandalorian": "The_Mandalorian", "Matrix of Leadership": "Matrix_of_Leadership", "Megatronus Prime": "Megatronus_Prime", "Micronus Prime": "Micronus_Prime", "Minerva": "Minerva_(G1_robot)", "Nexus Prime": "Nexus_Prime", "Onyx Prime": "Onyx_Prime", "Pointblank": "Pointblank", "Prima Prime": "Prima", "Quintesson": "Quintesson_Judge_(G1)", "Quintus Prime": "Quintus_Prime", "Rattrap": "Rattrap", "Red Heat": "Red_Heat", "Road Rocket": "Road_Rocket_(G2)", "Roadtrap": "Roadtrap", "Six Shot": "Six_Shot", "Skullgrin": "Skullgrin", "Solus Prime": "Solus_Prime", "Spike": "Spike", "Star Optimus": "Optimus_Prime_(G1)", "Strongarm": "Strongarm_(RID)", "Sweeps": "Sweeps", "Trip-Up": "Trip-Up", "Vector Prime": "Vector_Prime_(Cybertron)", "Wheeljack Origins": "Wheeljack_(G1)", "Wild Ride": "Wildrider_(G1)", "Wreck Gar": "Wreck-Gar_(G1)"};
+const TFWIKI_OVERRIDES = {"Agent Knight": "Agent_Knight", "Alchemist Prime": "Maccadam", "Amalgamous Prime": "Amalgamous_Prime", "Apeface": "Apeface", "Battleslash": "Battleslash", "Bone Shaker": "Bone_Shaker", "Daddy-O": "Trip-Up", "Doublecross": "Doublecross", "Dracodon": "Dracodon", "Ectotron": "Ectotron", "Gigawatt": "Gigawatt", "Greenlight": "Greenlight", "Horri-Bull": "Horri-Bull", "Hun-Grrr": "Hun-Gurrr_(G1)", "Ironhide BD": "Ironhide_(G1)", "Jalopy": "Jalopy", "Jhiaxus": "Jhiaxus_(G2)", "Leadfoot G2": "Leadfoot_(G2)", "Liege Maximo": "Liege_Maximo", "Mandalorian": "The_Mandalorian", "Matrix of Leadership": "Matrix_of_Leadership", "Megatronus Prime": "Megatronus_Prime", "Micronus Prime": "Micronus_Prime", "Minerva": "Minerva_(G1_robot)", "Nexus Prime": "Nexus_Prime", "Onyx Prime": "Onyx_Prime", "Pointblank": "Pointblank", "Prima Prime": "Prima", "Quickswitch": "Quickswitch", "Quintesson": "Quintesson_Judge_(G1)", "Quintus Prime": "Quintus_Prime", "Rattrap": "Rattrap", "Red Heat": "Red_Heat", "Road Rocket": "Road_Rocket_(G2)", "Roadtrap": "Roadtrap", "Six Shot": "Six_Shot", "Skullgrin": "Skullgrin", "Solus Prime": "Solus_Prime", "Spike": "Spike", "Star Optimus": "Optimus_Prime_(G1)", "Strongarm": "Strongarm_(RID)", "Sweeps": "Sweeps", "Trip-Up": "Trip-Up", "Vector Prime": "Vector_Prime_(Cybertron)", "Wheeljack Origins": "Wheeljack_(G1)", "Wild Ride": "Wildrider_(G1)", "Wreck Gar": "Wreck-Gar_(G1)"};
 
 function tfwikiUrl(name) {
   // Strip *<continuity> suffix the user uses for movie/animated variants
@@ -635,7 +635,7 @@ function showMarketBtn(line) {
 async function init() {
   // Cache-buster: appended to data.json fetch so browsers always pull fresh
   // after a rebuild rather than serving stale cards.
-  const res = await fetch('data.json?v=2026-06-02');
+  const res = await fetch('data.json?v=2026-06-03');
   figures = await res.json();
   render();
 }

@@ -71,6 +71,9 @@ TFWIKI_OVERRIDES = {
     "Trip-Up":              "Trip-Up",
     "Horri-Bull":           "Horri-Bull",
     "Greenlight":           "Greenlight",
+    "Apeface":              "Apeface",
+    "Quickswitch":          "Quickswitch",
+    "Doublecross":          "Doublecross",
 
     # ── 2-pack partners documented on the partner's page ──
     "Daddy-O":              "Trip-Up",
