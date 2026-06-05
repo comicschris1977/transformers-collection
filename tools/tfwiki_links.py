@@ -59,6 +59,7 @@ TFWIKI_OVERRIDES = {
     "Gigawatt":             "Gigawatt",
     "Jalopy":               "Jalopy",
     "Matrix of Leadership": "Matrix_of_Leadership",
+    "Herald of Unicron":    "Herald_of_Unicron",
     "Nexus Prime":          "Nexus_Prime",
     "Pointblank":           "Pointblank",
     "Rattrap":              "Rattrap",
