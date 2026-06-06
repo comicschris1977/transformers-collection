@@ -34,6 +34,7 @@ LINE_CORRECTIONS = {
     "Wait for  AotP":      "Wait for AotP",       # double space
     "SS Bumblee Movie":    "SS Bumblebee Movie",  # was Bumblee (missing b+e)
     "SS Bumbleebee Movie": "SS Bumblebee Movie",  # earlier typo (extra e)
+    "SS66":                "SS86",                # typo (1986 not 1966)
 }
 
 def get_credentials():
