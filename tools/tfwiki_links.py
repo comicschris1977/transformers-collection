@@ -82,9 +82,15 @@ TFWIKI_OVERRIDES = {
     "Apelinq":              "Apelinq_(BM)",          # Beast Machines
     "Barrage":              "Barrage_(Insecticon)",  # G1 Insecticon (deluxe)
     "Thunderclash":         "Thunderclash",          # bare disambig - many continuities
+    "Doubledealer":         "Doubledealer",          # bare-name page
     # TFWiki uses lowercase "n" no spaces ("Rack'n'Ruin"); title-case rule
     # would produce capital "N" and 404
     "Rack 'N Ruin":         "Rack%27n%27Ruin_(G1)",
+
+    # ── G1 rebuilds / sub-modes documented on the original character's page ──
+    "Counterpunch":         "Punch_(G1)",            # alt-mode of Punch
+    "Goldbug":              "Bumblebee_(G1)",        # rebuilt Bumblebee
+    "Powermaster Optimus Prime": "Optimus_Prime_(G1)",  # 1988 PM Prime is one of OP's many toys
 
     # ── 2-pack partners documented on the partner's page ──
     "Daddy-O":              "Trip-Up",
