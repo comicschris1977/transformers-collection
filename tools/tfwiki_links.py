@@ -76,6 +76,16 @@ TFWIKI_OVERRIDES = {
     "Quickswitch":          "Quickswitch",
     "Doublecross":          "Doublecross",
 
+    # ── Disambig redirects: take user straight to the canonical article ──
+    "Manta Ray":            "Manta_Ray_(G2)",        # G2 character
+    "Tap-Out":              "Tap-Out_(Universe)",    # Universe character
+    "Apelinq":              "Apelinq_(BM)",          # Beast Machines
+    "Barrage":              "Barrage_(Insecticon)",  # G1 Insecticon (deluxe)
+    "Thunderclash":         "Thunderclash",          # bare disambig - many continuities
+    # TFWiki uses lowercase "n" no spaces ("Rack'n'Ruin"); title-case rule
+    # would produce capital "N" and 404
+    "Rack 'N Ruin":         "Rack%27n%27Ruin_(G1)",
+
     # ── 2-pack partners documented on the partner's page ──
     "Daddy-O":              "Trip-Up",
 }
