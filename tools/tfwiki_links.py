@@ -44,6 +44,7 @@ TFWIKI_OVERRIDES = {
     "Agent Knight":         "Agent_Knight",
     "Bone Shaker":          "Bone_Shaker",
     "Twinmill":             "Twin_Mill",
+    "Overdrive":            "Overdrive",
 
     # ── Disambiguators that the default _(G1) wouldn't catch ──
     "Quintesson":           "Quintesson_Judge_(G1)",
