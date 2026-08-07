@@ -460,16 +460,22 @@ def map_faction(name_clean: str) -> str:
 
 
 STATUS_TO_CONDITION = {
-    "owned":      "Opened Complete",
-    "preordered": "",
-    "ordered":    "",
-    "want":       "",
+    "owned":       "Opened Complete",
+    "placeholder": "Opened Complete",  # physically owned — just a stand-in figure
+    "preordered":  "",
+    "ordered":     "",
+    "want":        "",
+    "need":        "",
 }
+
+# "placeholder" means the user owns a stand-in until a better release exists,
+# so it ships in the owned export alongside real owned figures.
+OWNED_STATUSES = ["owned", "placeholder"]
 
 
 def main():
     args = sys.argv[1:]
-    statuses = ["owned"]
+    statuses = list(OWNED_STATUSES)
     out_path = None
     i = 0
     while i < len(args):
@@ -490,7 +496,12 @@ def main():
         figs = [f for f in figs if f["status"] in statuses]
 
     if out_path is None:
-        tag = "all" if statuses is None else "+".join(statuses)
+        if statuses is None:
+            tag = "all"
+        elif statuses == OWNED_STATUSES:
+            tag = "owned"  # keep the familiar filename; placeholder is an owned sub-case
+        else:
+            tag = "+".join(statuses)
         out_path = Path(__file__).parent.parent / f"bot_binder_{tag}.csv"
 
     # CSV header — Bot Binder columns (lowercase_underscore convention from template)
