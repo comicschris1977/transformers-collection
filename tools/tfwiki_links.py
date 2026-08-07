@@ -46,6 +46,10 @@ TFWIKI_OVERRIDES = {
     "Twinmill":             "Twin_Mill",
     "Overdrive":            "Overdrive",
     "Shredhead":            "Shredhead",
+    # Ricochet_(G1) is the Nebulan Targetmaster gun; the robot (a black Jazz
+    # repaint, aka Stepper) lives on the Headmasters page.
+    "Ricochet AKA Stepper": "Ricochet_(Headmasters)",
+    "Ricochet":             "Ricochet_(Headmasters)",
 
     # ── Disambiguators that the default _(G1) wouldn't catch ──
     "Quintesson":           "Quintesson_Judge_(G1)",
