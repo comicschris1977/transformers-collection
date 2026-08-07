@@ -15,17 +15,21 @@ import fetch_ebay_prices  # reuse LINE_TO_QUERY map for eBay link construction
 SITE_DIR = Path(__file__).parent.parent / "docs"
 
 STATUS_LABEL = {
-    "owned":      "Owned",
-    "want":       "Wishlist",
-    "preordered": "Pre-ordered",
-    "ordered":    "Ordered",
+    "owned":       "Owned",
+    "want":        "Wishlist",
+    "need":        "Need",
+    "placeholder": "Placeholder",
+    "preordered":  "Pre-ordered",
+    "ordered":     "Ordered",
 }
 
 STATUS_COLOR = {
-    "owned":      "#00d4aa",
-    "want":       "#4d9fff",
-    "preordered": "#ff9f43",
-    "ordered":    "#c56cfc",
+    "owned":       "#00d4aa",
+    "want":        "#4d9fff",
+    "need":        "#ff4d94",
+    "placeholder": "#8a8fa3",
+    "preordered":  "#ff9f43",
+    "ordered":     "#c56cfc",
 }
 
 PLACEHOLDER = "images/placeholder.png"
@@ -589,6 +593,8 @@ def build():
   <div class="stat"><div class="stat-num">{stats['total']}</div><div class="stat-lbl">Total</div></div>
   <div class="stat"><div class="stat-num">{stats['owned']}</div><div class="stat-lbl">Owned</div></div>
   <div class="stat purple"><div class="stat-num">{stats['want']}</div><div class="stat-lbl">Wishlist</div></div>
+  <div class="stat purple"><div class="stat-num">{stats['need']}</div><div class="stat-lbl">Need</div></div>
+  <div class="stat"><div class="stat-num">{stats['placeholder']}</div><div class="stat-lbl">Placeholder</div></div>
   <div class="stat purple"><div class="stat-num">{stats['preordered']}</div><div class="stat-lbl">Pre-ordered</div></div>
   <div class="stat"><div class="stat-num">{stats['ordered']}</div><div class="stat-lbl">Ordered</div></div>
   <div class="stat"><div class="stat-num">{stats['wreckers']}</div><div class="stat-lbl">Wreckers</div></div>
@@ -606,6 +612,8 @@ def build():
   <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
   <button class="filter-btn" onclick="setFilter('owned',this)">Owned</button>
   <button class="filter-btn" onclick="setFilter('want',this)">Wishlist</button>
+  <button class="filter-btn" onclick="setFilter('need',this)">Need</button>
+  <button class="filter-btn" onclick="setFilter('placeholder',this)">Placeholder</button>
   <button class="filter-btn" onclick="setFilter('preordered',this)">Pre-ordered</button>
   <button class="filter-btn" onclick="setFilter('ordered',this)">Ordered</button>
   <button class="filter-btn" onclick="setFilter('wrecker',this)">Wreckers</button>

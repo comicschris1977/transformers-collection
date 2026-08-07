@@ -15,6 +15,8 @@ CSV_PATH = Path(__file__).parent.parent / "collection_raw.csv"
 STATUS_MAP = {
     "yes": "owned",
     "want": "want",
+    "need": "need",              # higher-priority wishlist than "want"
+    "placeholder": "placeholder",  # owns a stand-in until a better release
     "pordered": "preordered",
     "ordered": "ordered",
 }

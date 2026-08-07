@@ -168,6 +168,8 @@ def stats():
             SUM(CASE WHEN status='want' THEN 1 ELSE 0 END) as want,
             SUM(CASE WHEN status='preordered' THEN 1 ELSE 0 END) as preordered,
             SUM(CASE WHEN status='ordered' THEN 1 ELSE 0 END) as ordered,
+            SUM(CASE WHEN status='need' THEN 1 ELSE 0 END) as need,
+            SUM(CASE WHEN status='placeholder' THEN 1 ELSE 0 END) as placeholder,
             SUM(is_wrecker) as wreckers,
             ROUND(AVG(CASE WHEN rank IS NOT NULL THEN rank END), 1) as avg_rank
         FROM figures
