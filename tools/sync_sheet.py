@@ -41,6 +41,23 @@ def norm_key(name: str, line) -> tuple:
     return ((name or "").strip().lower(), ((line or "") or "").strip().lower())
 
 
+def index_by_key(rows) -> dict:
+    """Map (name, line, occurrence) -> row.
+
+    The occurrence counter matters: the user deliberately owns duplicates of
+    the same figure in the same line (e.g. a second Inferno, one per display
+    shelf). Keying on (name, line) alone collapsed those, so every copy after
+    the first was silently dropped from the sync.
+    """
+    out, seen = {}, {}
+    for r in rows:
+        base = norm_key(r["name"], r["line"])
+        n = seen.get(base, 0)
+        seen[base] = n + 1
+        out[base + (n,)] = r
+    return out
+
+
 def normalize_for_compare(value):
     """Treat None and empty string as equal; lowercase nothing here (we want
     real changes like capitalisation fixes to flow through)."""
@@ -100,16 +117,12 @@ def main():
     sheet_rows = load_sheet_rows()
     db_rows    = db.list_figures()
 
-    sheet_by_key = {}
-    sheet_dupes  = []
-    for r in sheet_rows:
-        key = norm_key(r["name"], r["line"])
-        if key in sheet_by_key:
-            sheet_dupes.append(r)
-        else:
-            sheet_by_key[key] = r
+    # Sort DB rows by id so the Nth copy of a duplicate pairs with the same
+    # DB row every run (list_figures orders by name with no tiebreak).
+    sheet_by_key = index_by_key(sheet_rows)
+    db_by_key    = index_by_key(sorted(db_rows, key=lambda r: r["id"]))
 
-    db_by_key = {norm_key(r["name"], r["line"]): r for r in db_rows}
+    dupe_keys = sorted({k[:2] for k in sheet_by_key if k[2] > 0})
 
     # 3. Classify — first pass: exact (name, line) match
     new_rows     = []
@@ -167,8 +180,9 @@ def main():
     print(f"Changed:         {len(changed_rows)}")
     print(f"Renamed (line):  {len(renamed_rows)}")
     print(f"In DB, not sheet: {len(missing_from_sheet)}")
-    if sheet_dupes:
-        print(f"Duplicate sheet keys (skipped after first): {len(sheet_dupes)}")
+    if dupe_keys:
+        pretty = ", ".join(f"{n.title()} [{l or '?'}]" for n, l in dupe_keys)
+        print(f"Intentional duplicates (all copies synced): {pretty}")
     print()
 
     if new_rows:
